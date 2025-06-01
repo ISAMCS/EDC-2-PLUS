@@ -1,4 +1,5 @@
 import json
+import os
 from sklearn.metrics import precision_score, recall_score
 import sys
 from nltk.tokenize import word_tokenize
@@ -43,8 +44,14 @@ def compute_metrics(dataset):
     em_score = em_total / len(dataset)
     f1_score = f1_total / len(dataset)
     return round(em_score*100,2), round(f1_score*100,2)
+REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
 
-input_file = f"../../{benchmark}/extracted_answer/{date}_{dataset}_baseline_wo_retrieve_{eval_method}.json"
+input_file = os.path.join(
+    REPO_ROOT,
+    benchmark,
+    "extracted_answer",
+    f"{date}_{dataset}_baseline_wo_retrieve_eval_{eval_method}.json"
+)
 with open(input_file, "r", encoding="utf-8") as f:
     datasets = json.load(f)
 em_score, f1_score = compute_metrics(datasets)

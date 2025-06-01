@@ -4,7 +4,7 @@ import sys
 
 dataset = sys.argv[1]
 
-input_file = f"../../{dataset}/datasets/{dataset}_results_w_negative_passages_full_embedding.json"
+input_file = f"../../{dataset}/dev.json"
 
 with open(input_file, "r", encoding="utf-8") as lines:
     cases = json.load(lines)

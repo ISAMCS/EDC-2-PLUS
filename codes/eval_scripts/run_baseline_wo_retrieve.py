@@ -8,7 +8,7 @@ benchmark = sys.argv[4]
 
 print("start_to_run")
 print("start_to_eval")
-subprocess.run(["python", "../run_methods/eval_baseline_wo_retrieve.py", eval_model, date, dataset,benchmark])
+subprocess.run(["python", "codes/run_methods/eval_baseline_wo_retrieve.py", eval_model, date, dataset,benchmark])
 print("end_eval")
 print("start_to_extracte_answer")
 if eval_model == "llama3_request":
@@ -19,8 +19,8 @@ elif eval_model == "GPT4o_request":
     eval_method = "eval_4o"
 else:
     eval_method = "eval_3.5turbo"
-subprocess.run(["python", "../eval_metric/extracted_answer_single.py", date, dataset, eval_method,benchmark])
+subprocess.run(["python", "codes/eval_metric/extracted_answer_single.py", date, dataset, eval_method,benchmark])
 print("end_extracte_answer")
 print("start_to_caculate_F1_EM")
-subprocess.run(["python", "../eval_metric/caculate_F1_EM_single.py", date, dataset, eval_method,benchmark])
+subprocess.run(["python", "codes/eval_metric/caculate_F1_EM_single.py", date, dataset, eval_method,benchmark])
 print("end_caculate_F1_EM")

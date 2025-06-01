@@ -8,9 +8,9 @@ from requests.auth import HTTPBasicAuth
 import concurrent.futures
 import sys
 from sklearn.metrics import roc_auc_score
-sys.path.insert(0, "../")
-from utils import GPT_Instruct_request, GPT4omini_request, ChatGPT_request
-eval_model = GPT_Instruct_request
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+from codes.utils import llama3_request
+eval_model = llama3_request
 
 date = sys.argv[1]
 dataset = sys.argv[2]
@@ -54,8 +54,10 @@ def process_slice(slice_cases):
 
 def run():
     global eval_method, date, dataset
-    res_file = f"../{benchmark}/extracted_answer/{date}_{dataset}_baseline_wo_retrieve_{eval_method}.json"
-    case_file = f"../../{benchmark}/results/{date}_{dataset}_baseline_wo_retrieve_{eval_method}.json"
+    # Build absolute paths to avoid confusion
+    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+    case_file = os.path.join(base_dir, benchmark, "results", f"{date}_{dataset}_baseline_wo_retrieve_eval_llama3.json")
+    res_file = os.path.join(base_dir, benchmark, "extracted_answer", f"{date}_{dataset}_baseline_wo_retrieve_eval_llama3_request.json")
     with open(case_file, "r", encoding="utf-8") as lines:
         cases = json.load(lines)
         json_data = []
@@ -63,16 +65,12 @@ def run():
         slice_length = len(cases) // num_slices
         slices = [cases[i:i+slice_length] for i in range(0, len(cases), slice_length)]
         final_result = []
-        # 并行评测八份切片
         results = []
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            results = executor.map(process_slice, slices)
-        # 合并八份切片的结果
-        for result in results:
+        for slice_cases in slices:
+            result = process_slice(slice_cases)
             final_result.extend(result)
-        with open(res_file, "w", encoding = "utf-8" ) as json_file:
-            json.dump(final_result, json_file,  ensure_ascii=False, indent=4)
-
+        with open(res_file, "w", encoding="utf-8") as json_file:
+            json.dump(final_result, json_file, ensure_ascii=False, indent=4)
 run()
     
 

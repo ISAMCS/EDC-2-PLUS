@@ -8,7 +8,6 @@ import json
 from utils import GPT_Instruct_request, ChatGPT_request
 from transformers import AutoModel, AutoTokenizer, BertModel, BertTokenizer
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-path = #your embedding model here, or you can use close-end api like text-adam-002
 tokenizer = AutoTokenizer.from_pretrained(path)
 model = AutoModel.from_pretrained(path, torch_dtype = torch.float16).to(device)
 

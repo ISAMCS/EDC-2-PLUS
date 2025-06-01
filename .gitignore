@@ -1,0 +1,47 @@
+# Python
+__pycache__/
+*.py[cod]
+*.so
+*.pyd
+*.pyo
+
+# Virtual environments
+.venv/
+env/
+venv/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Model files and large data
+models/
+*.gguf
+*.pt
+*.ckpt
+
+# Output and cache
+*.log
+*.out
+*.tmp
+*.bak
+
+# IDE/editor settings
+.vscode/
+.idea/
+
+# Results and intermediate files
+*.xlsx
+*.json
+*.csv
+
+# Ignore extracted answers, results, and tables (if not needed)
+triviaq/extracted_answer/
+triviaq/results/
+triviaq/tables/
+webq/extracted_answer/
+webq/results/
+webq/tables/
