@@ -49,3 +49,9 @@ models/
 #webq/results/
 #webq/tables/
 
+.env
+codes/utils.py
+codes/utils/summary_cache.py
+codes/utils.py
+codes/utils.py
+.env
