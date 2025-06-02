@@ -39,9 +39,11 @@ models/
 *.csv
 
 # Ignore extracted answers, results, and tables (if not needed)
-triviaq/extracted_answer/
-triviaq/results/
-triviaq/tables/
-webq/extracted_answer/
-webq/results/
-webq/tables/
+
+#triviaq/extracted_answer/
+#triviaq/results/
+#triviaq/tables/
+#webq/extracted_answer/
+#webq/results/
+#webq/tables/
+

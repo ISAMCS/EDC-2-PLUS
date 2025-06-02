@@ -1,3 +1,5 @@
+#python codes/datasets/baseline_compress.py llama3_request 0601 full "[20]" "[40]" triviaq
+
 import torch
 import json
 from tqdm import tqdm
@@ -6,21 +8,21 @@ import sys
 import requests
 from requests.auth import HTTPBasicAuth
 import concurrent.futures
-from utils import GPT_Instruct_request, ChatGPT_request, llama3_request, GPT4o_request
+from codes.datasets.utils import llama4_maverick_request
 import re
 import ast
 
-# 选择评测模型
-eval_model = sys.argv[1]  # llama3_request, GPT_Instruct_request, ChatGPT_request
+
+eval_model = sys.argv[1] 
 date = sys.argv[2]
-dataset = sys.argv[3]  # 496 or 300 or full
+dataset = sys.argv[3]
 topkk = ast.literal_eval(sys.argv[4])
 noises = ast.literal_eval(sys.argv[5])
 benchmark = sys.argv[6]
-if eval_model == "llama3_request":
-    assess_model = llama3_request
-elif eval_model == "GPT_Instruct_request":
-    assess_model = GPT_Instruct_request
+if eval_model == "llama4_request":
+    assess_model = llama4_maverick_request
+elif eval_model == "Phi":
+    assess_model = Microsoft_Phi4_request
 elif eval_model == "ChatGPT_request":
     assess_model = ChatGPT_request
 elif eval_model == "GPT4o_request":
@@ -53,9 +55,7 @@ def _run_nli_GPT3(num, docs):
 
 
 def extract_numbered_sections(text):
-    """
-    解析 GPT 生成的文本，按 `1. 2. 3. ...` 的格式提取内容
-    """
+
     sections = {}
     lines = text.split("\n")
     current_index = None
@@ -114,12 +114,12 @@ def run(topk, noise):
         "ChatGPT_request": "3.5turbo"
     }.get(eval_model, eval_model)
     
-    res_file = f"../../{benchmark}/datasets/case_{date}_{dataset}_summary_baseline_compress_{eval_method}_noise{noise}_topk{topk}.json"
-    case_file = f"../../{benchmark}/datasets/{benchmark}_results_random_{dataset}_w_negative_passages_noise{noise}_topk{topk}_embedding.json"
+    res_file = f"{benchmark}/datasets/case_{date}_{dataset}_summary_baseline_compress_{eval_method}_noise{noise}_topk{topk}.json"
+    case_file = f"{benchmark}/datasets/{benchmark}_results_random_{dataset}_w_negative_passages_noise{noise}_topk{topk}_embedding.json"
     with open(case_file, "r", encoding="utf-8") as lines:
         cases = json.load(lines)
         num_slices = 20
-        slice_length = len(cases) // num_slices
+        slice_length = max(1, len(cases) // num_slices)
         slices = [cases[i:i+slice_length] for i in range(0, len(cases), slice_length)]
         final_result = []
         
@@ -131,7 +131,7 @@ def run(topk, noise):
         
         with open(res_file, "w", encoding="utf-8") as json_file:
             json.dump(final_result, json_file, ensure_ascii=False, indent=4)
-
+            
 for topk in topkk:
     for noise in noises:
         run(topk, noise)

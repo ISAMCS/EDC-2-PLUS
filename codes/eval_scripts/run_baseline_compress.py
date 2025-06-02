@@ -65,3 +65,11 @@ subprocess.run([
     date, dataset, eval_method, topkk, noises, benchmark, summarization_method
 ])
 print("end_caculate_F1_EM")
+
+'''
+python codes/datasets/make_datasets.py triviaq
+python codes/datasets/baseline_compress.py llama3_request 0601 full "[20]" "[40]" triviaq llama2
+python codes/run_methods/eval_baseline_compress.py llama3_request 0601 full "[20]" "[40]" triviaq llama2
+python codes/eval_metric/extracted_answer_topkk_compress.py 0601 full eval_llama3 "[20]" "[40]" triviaq llama2
+python codes/eval_metric/caculate_F1_EM_compress.py 0601 full eval_llama3 "[20]" "[40]" triviaq llama2
+'''

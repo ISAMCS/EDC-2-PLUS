@@ -1,47 +1,62 @@
-from llama_cpp import Llama
 import re
 import string
 import json
 import concurrent.futures
 import functools
 import time
+import os
+import requests
+from dotenv import load_dotenv
 
-GGUF_PATH = "models/llama-2-7b-chat.Q4_0.gguf"
+load_dotenv()
+LLAMA4_API_KEY = os.getenv("KEY")
+API_URL = "https://openrouter.ai/api/v1/chat/completions"
+MICROSOFT_API_KEY = os.getenv("MICROSOFT_KEY")
 
-# Instantiate the Llama model once
-llm = Llama(
-    model_path=GGUF_PATH,
-    n_ctx=2048,
-    n_threads=8
-)
+def llama4_maverick_request(prompt: str, temperature: float = 0.0) -> str:
+    headers = {
+        "Authorization": f"Bearer {LLAMA4_API_KEY}",
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "model": "meta-llama/llama-4-maverick:free",
+        "messages": [{"role": "user", "content": prompt}],
+        "temperature": temperature,
+        "max_tokens": 512,
+        "stop": ["</s>"]
+    }
+    response = requests.post(API_URL, headers=headers, json=payload)
+    response.raise_for_status()
+    return response.json()["choices"][0]["message"]["content"].strip()
 
-def llama_local_request(prompt: str, temperature: float = 0.0, max_tokens: int = 512) -> str:
-    """
-    Send 'prompt' to the local llama-2-7b-chat.Q4_0.gguf model.
-    Returns the raw text of the first choice.
-    """
-    out = llm(
-        prompt,
-        max_tokens=max_tokens,
-        temperature=temperature,
-        stop=["</s>"]
-    )
-    return out["choices"][0]["text"].strip()
+def microsoft_phi4_reasoning_plus_request(prompt: str, temperature: float = 0.0) -> str:
+    headers = {
+        "Authorization": f"Bearer {MICROSOFT_API_KEY}",
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "model": "microsoft/phi-4-reasoning-plus:free",
+        "messages": [{"role": "user", "content": prompt}],
+        "temperature": temperature,
+        "max_tokens": 512,
+    }
+    response = requests.post(API_URL, headers=headers, json=payload)
 
+    if response.status_code == 401:
+        raise Exception("❌ 401 Unauthorized: Check if your OpenRouter key is correct and if your account has access to this model (paid model).")
+
+# Route other models to the same local model for now
 def ChatGPT_request(prompt, temperature=0.0):
-    return llama_local_request(prompt, temperature)
+    return llama4_maverick_request(prompt, temperature)
 
 def GPT_Instruct_request(prompt, temp=0.0):
-    return llama_local_request(prompt, temp)
+    return llama4_maverick_request(prompt, temp)
 
 def GPT4o_request(prompt):
-    return llama_local_request(prompt, 0.0)
-
-def llama3_request(prompt, temp=0.0):
-    return llama_local_request(prompt, temp)
+    return llama4_maverick_request(prompt, 0.0)
 
 def qwen_request(prompt, temp=0.0):
-    return llama_local_request(prompt, temp)
+    return llama4_maverick_request(prompt, temp)
 
 def count_tokens(text: str) -> int:
     return len(text.split())

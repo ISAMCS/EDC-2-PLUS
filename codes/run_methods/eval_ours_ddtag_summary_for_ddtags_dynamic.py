@@ -81,11 +81,9 @@ def run(topk,noise):
         slice_length = len(cases) // num_slices
         slices = [cases[i:i+slice_length] for i in range(0, len(cases), slice_length)]
         final_result = []
-        # 并行评测八份切片
         results = []
         with concurrent.futures.ThreadPoolExecutor() as executor:
             results = executor.map(process_slice, slices)
-        # 合并八份切片的结果
         for result in results:
             final_result.extend(result)
         with open(res_file, "w", encoding = "utf-8" ) as json_file:

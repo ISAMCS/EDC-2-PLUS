@@ -13,7 +13,6 @@ benchmark = sys.argv[8]
 #python run_ours_ddtag_for_ddtags_dynamic.py 0328 redundancy ChatGPT_request "[20]" "[20,40,60,80]" 1110 dynamic
 for length in ["3"]:
     # 使用 subprocess 运行其他 Python 文件，并传递环境变量
-    # 使用 subprocess 运行其他 Python 文件，并传递环境变量
     print(f"start_to_run_{length}")
     print("start_to_get_ddtags")
     #subprocess.run(["python", "../datasets/get_tag_doc_doc_similarity_dynamic.py", topkk, noises, length, dataset,benchmark])

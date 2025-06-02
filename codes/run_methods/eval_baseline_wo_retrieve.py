@@ -8,7 +8,7 @@ from requests.auth import HTTPBasicAuth
 import concurrent.futures
 from sklearn.metrics import roc_auc_score
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from utils import GPT_Instruct_request, ChatGPT_request, llama3_request, GPT4o_request, qwen_request
+from codes.text_utils import llama4_maverick_request
 
 eval_model = sys.argv[1]  # llama3_request, GPT_Instruct_request, ChatGPT_request
 date = sys.argv[2]
@@ -77,4 +77,3 @@ def run():
             json.dump(final_result, json_file, ensure_ascii=False, indent=4)
 run()
 print(f"In Eval Baseline Wo Retrieve: {eval_model} {date} {dataset}")
-# 这个脚本的目的是使用不同的模型（GPT-4、GPT-3.5、GPT-3.5-turbo和自定义的T5模型）来评估案例中的前提和断言之间的逻辑关系

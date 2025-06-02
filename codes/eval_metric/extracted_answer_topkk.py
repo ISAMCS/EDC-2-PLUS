@@ -8,11 +8,11 @@ from requests.auth import HTTPBasicAuth
 import concurrent.futures
 import sys
 from sklearn.metrics import roc_auc_score
-sys.path.insert(0, "../")
-from utils import GPT_Instruct_request, GPT4omini_request, ChatGPT_request
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+from codes.text_utils llama4_maverick_request
+eval_model = llama4_maverick_request
 import ast
 
-eval_model = GPT_Instruct_request
 
 date = sys.argv[1]
 dataset = sys.argv[2]
@@ -69,11 +69,9 @@ def run(topk,noise):
         slice_length = len(cases) // num_slices
         slices = [cases[i:i+slice_length] for i in range(0, len(cases), slice_length)]
         final_result = []
-        # 并行评测八份切片
         results = []
         with concurrent.futures.ThreadPoolExecutor() as executor:
             results = executor.map(process_slice, slices)
-        # 合并八份切片的结果
         for result in results:
             final_result.extend(result)
         with open(res_file, "w", encoding = "utf-8" ) as json_file:
@@ -83,4 +81,3 @@ for topk in topkk:
     for noise in noises:
         run(topk, noise)
         print(f"In Extracted Answer TopkK:{topk} Noise:{noise}")  
-# 这个脚本的目的是使用不同的模型（GPT-4、GPT-3.5、GPT-3.5-turbo和自定义的T5模型）来评估案例中的前提和断言之间的逻辑关系

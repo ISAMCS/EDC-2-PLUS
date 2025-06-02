@@ -10,7 +10,7 @@ benchmark = sys.argv[6]
 
 print("start_to_run")
 print("start_to_eval")
-subprocess.run(["python", "../run_methods/eval_baseline_rag.py", eval_model, date, dataset,topkk,noises,benchmark])
+subprocess.run(["python", "codes/run_methods/eval_baseline_rag.py", eval_model, date, dataset,topkk,noises,benchmark])
 print("end_eval")
 print("start_to_extract_answer")
 if eval_model == "llama3_request":
@@ -24,8 +24,8 @@ elif eval_model == "GPT4o_request":
 elif eval_model == "qwen_request":
     eval_method = "eval_qwen"
 etype = "rag" ## rag or ours
-subprocess.run(["python", "../eval_metric/extracted_answer_topkk.py", date, dataset, eval_method, etype,topkk,noises,benchmark])
+subprocess.run(["python", "codes/eval_metric/extracted_answer_topkk.py", date, dataset, eval_method, etype,topkk,noises,benchmark])
 print("end_extracte_answer")
 print("start_to_caculate_F1_EM")   
-subprocess.run(["python", "../eval_metric/caculate_F1_EM.py", date, dataset, eval_method, etype,topkk,noises,benchmark])
+subprocess.run(["python", "codes/eval_metric/caculate_F1_EM.py", date, dataset, eval_method, etype,topkk,noises,benchmark])
 print("end_caculate_F1_EM")

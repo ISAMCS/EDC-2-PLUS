@@ -8,8 +8,8 @@ from requests.auth import HTTPBasicAuth
 import concurrent.futures
 import sys
 from sklearn.metrics import roc_auc_score
-sys.path.insert(0, "../")
-from utils import GPT_Instruct_request, ChatGPT_request, llama3_request, GPT4o_request, qwen_request
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from text_utils import llama4_maverick_request
 import ast
 
 eval_model = sys.argv[1]#llama3_request, GPT_Instruct_request, ChatGPT_request
