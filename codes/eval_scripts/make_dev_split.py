@@ -1,5 +1,8 @@
 import os
 import json
+import sys
+
+DATASET = sys.argv[1]
 
 def main():
     # Set how many questions you want to keep
@@ -10,7 +13,7 @@ def main():
     repo_root  = os.path.abspath(os.path.join(script_dir, "..", ".."))
 
     # Use the specified input file
-    input_path = os.path.join(repo_root, "triviaq", "OG", "triviaq_results_w_negative_passages_full.json")
+    input_path = os.path.join(repo_root, DATASET, "OG", f"{DATASET}_results_w_negative_passages_full.json")
 
     with open(input_path, "r", encoding="utf-8") as f:
         data = json.load(f)
