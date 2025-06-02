@@ -9,7 +9,7 @@ __pycache__/
 .env
 EDC-2-RAG-NEW.git.bfg-report
 EDC-2-RAG-NEW.git
-EDC-2-RAG-NEW.git/hooks/commit-msg.sample
+EDC-2-RAG-NEW.git/hooks/
 
 # Virtual environments
 .venv/
