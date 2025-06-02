@@ -8,7 +8,7 @@ import sys
 import requests
 from requests.auth import HTTPBasicAuth
 import concurrent.futures
-from codes.datasets.utils import llama4_maverick_request
+from codes.datasets.utils import llama4_maverick_request, Microsoft_Phi4_request, mistral7b_instruct_request, gpt35_turbo_0613_request
 import re
 import ast
 
@@ -23,36 +23,38 @@ if eval_model == "llama4_request":
     assess_model = llama4_maverick_request
 elif eval_model == "Phi":
     assess_model = Microsoft_Phi4_request
-elif eval_model == "ChatGPT_request":
-    assess_model = ChatGPT_request
-elif eval_model == "GPT4o_request":
-    assess_model = GPT4o_request
+elif eval_model == "mistral7b_instruct_request":
+    assess_model = mistral7b_instruct_request
+elif eval_model == "gpt35_turbo_0613_request":
+    assess_model = gpt35_turbo_0613_request
 
 filter_paragraph = ["No content to", "no content to", "I'm sorry", "I am sorry", "I can not provide", "I can't provide", "Could you clarify", "Sorry, I", "Could you clarify", "?"]
 
 def _run_nli_GPT3(num, docs):
     global eval_model
     prompt = f"""
-**#Instruction#:** Rewrite each of the following {num} documents separately, making them more concise and clear. Try to ensure that the compressed documents are no more than half the length of the original documents.
+    You are given a question, a list of possible correct answers, and a document. Extract any key point or evidence from the document that directly answers the question, especially if it matches or supports any of the provided answers.
 
-**#Documents#:**  
-{docs}  
+    - Focus only on information relevant to the question and answers.
+    - Use concise language and quote or closely paraphrase the document's wording.
+    - Do not add any information that is not present in the document.
+    - If the document does not contain relevant information, respond with: "No content to extract."
 
-**#Rewritten Documents#:**  
-1. <to be rewritten>  
-2. <to be rewritten>  
-...  
-{num}. <to be rewritten>
-
-**#Attention#:** Follow the format of the examples above, ensuring the rewritten documents are concise, clear, and well-structured. Output only the rewritten documents in the specified format without additional explanations.
-"""
+    Question: <...>
+    Possible Answers: <...>
+    Document: <...>
+    Relevant content:
+    """
     while True:
         try:
             text = assess_model(prompt)
+            if text is None:
+                print("Warning: assess_model returned None. Returning default message.")
+                return "No content to extract."
             return text.strip()
         except Exception as e:
             print(f"An error occurred: {e}")
-
+            return "No content to extract."
 
 def extract_numbered_sections(text):
 
@@ -109,9 +111,11 @@ def process_slice(slice_cases):
 def run(topk, noise):
     global eval_model, date, dataset, benchmark
     eval_method = {
-        "llama3_request": "llama3",
-        "GPT_Instruct_request": "3.5instruct",
-        "ChatGPT_request": "3.5turbo"
+        "llama4_request": "llama4",
+        "Phi_request": "Phi",
+        "ChatGPT_request": "3.5turbo",
+        "mistral7b_instruct_request": "mistral7b",
+        "gpt35_turbo_0613_request": "3.5turbo"
     }.get(eval_model, eval_model)
     
     res_file = f"{benchmark}/datasets/case_{date}_{dataset}_summary_baseline_compress_{eval_method}_noise{noise}_topk{topk}.json"
@@ -131,7 +135,7 @@ def run(topk, noise):
         
         with open(res_file, "w", encoding="utf-8") as json_file:
             json.dump(final_result, json_file, ensure_ascii=False, indent=4)
-            
+
 for topk in topkk:
     for noise in noises:
         run(topk, noise)

@@ -13,8 +13,8 @@ print("start_to_eval")
 subprocess.run(["python", "codes/run_methods/eval_baseline_rag.py", eval_model, date, dataset,topkk,noises,benchmark])
 print("end_eval")
 print("start_to_extract_answer")
-if eval_model == "llama3_request":
-    eval_method = "eval_llama3"
+if eval_model == "llama4_request":
+    eval_method = "eval_llama4"
 elif eval_model == "GPT_Instruct_request":
     eval_method = "eval_3.5instruct"
 elif eval_model == "ChatGPT_request":

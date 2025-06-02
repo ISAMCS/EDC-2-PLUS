@@ -51,7 +51,7 @@ def compute_metrics(dataset):
     return round(em_score*100,2), round(f1_score*100,2)
 for topk in topkk:
     for noise in noises:
-        input_file = f"../../{benchmark}/extracted_answer/{date}_{dataset}_ours_summary_{summary_prompt}_ddtags_{clustering_type}_{length}_{eval_method}_noise{noise}_topk{topk}.json"
+        input_file = f"{benchmark}/extracted_answer/{date}_{dataset}_ours_summary_{summary_prompt}_ddtags_{clustering_type}_{length}_{eval_method}_noise{noise}_topk{topk}.json"
         with open(input_file, "r", encoding="utf-8") as f:
             datasets = json.load(f)
         em_score, f1_score = compute_metrics(datasets)

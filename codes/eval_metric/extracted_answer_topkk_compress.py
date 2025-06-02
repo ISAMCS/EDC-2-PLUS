@@ -10,8 +10,8 @@ from requests.auth import HTTPBasicAuth
 import sys
 from sklearn.metrics import roc_auc_score
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
-from codes.text_utils import llama4_maverick_request
-eval_model = llama4_maverick_request
+from codes.text_utils import llama4_maverick_request, Microsoft_Phi4_request, mistral7b_instruct_request, gpt35_turbo_0613_request
+eval_model = gpt35_turbo_0613_request
 import ast
 import time
 
@@ -43,7 +43,7 @@ Reformatted Answer: """
     while True:
         try:
             text = eval_model(prompt)
-            time.sleep(4)
+            time.sleep(3)
             break
         except Exception as e:
             print(f"An error occurred: {e}")

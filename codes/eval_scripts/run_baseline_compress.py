@@ -1,20 +1,6 @@
 import sys
 import subprocess
 
-def select_summarization_method(doc_length, relevance_score):
-    """
-    Adaptive policy for selecting summarization method.
-    - If doc is short, use extractive (TextRank).
-    - If doc is long and relevance is high, use abstractive (LLaMA-2).
-    - If doc is long and relevance is low, use extractive (KeyBERT).
-    """
-    if doc_length < 500:
-        return "textrank"
-    elif doc_length >= 500 and relevance_score > 0.7:
-        return "llama2"
-    else:
-        return "keybert"
-
 eval_model = sys.argv[1]  # llama3_request, GPT_Instruct_request, ChatGPT_request
 date = sys.argv[2]
 dataset = sys.argv[3]  # 400 or 113
@@ -24,8 +10,6 @@ benchmark = sys.argv[6]
 
 doc_length = int(sys.argv[7]) if len(sys.argv) > 7 else 1000
 relevance_score = float(sys.argv[8]) if len(sys.argv) > 8 else 0.8
-
-#python run_baseline_compress.py ChatGPT_request 0415 full "[5,20]" "[0,20,40,60,80,100]" hotpotqa 1200 0.85
 
 summarization_method = select_summarization_method(doc_length, relevance_score)
 print(f"Selected summarization method: {summarization_method}")
@@ -44,8 +28,8 @@ subprocess.run([
 ])
 print("end_eval")
 print("start_to_extract_answer")
-if eval_model == "llama3_request":
-    eval_method = "eval_llama3"
+if eval_model == "llama4_request":
+    eval_method = "eval_llama4"
 elif eval_model == "GPT_Instruct_request":
     eval_method = "eval_3.5instruct"
 elif eval_model == "ChatGPT_request":
@@ -65,11 +49,3 @@ subprocess.run([
     date, dataset, eval_method, topkk, noises, benchmark, summarization_method
 ])
 print("end_caculate_F1_EM")
-
-'''
-python codes/datasets/make_datasets.py triviaq
-python codes/datasets/baseline_compress.py llama3_request 0601 full "[20]" "[40]" triviaq llama2
-python codes/run_methods/eval_baseline_compress.py llama3_request 0601 full "[20]" "[40]" triviaq llama2
-python codes/eval_metric/extracted_answer_topkk_compress.py 0601 full eval_llama3 "[20]" "[40]" triviaq llama2
-python codes/eval_metric/caculate_F1_EM_compress.py 0601 full eval_llama3 "[20]" "[40]" triviaq llama2
-'''

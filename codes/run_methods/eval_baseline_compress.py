@@ -9,7 +9,7 @@ import time
 from copy import deepcopy
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
-from codes.text_utils import llama4_maverick_request, Microsoft_Phi4_request, ChatGPT_request, GPT_Instruct_request
+from codes.text_utils import llama4_maverick_request, Microsoft_Phi4_request, mistral7b_instruct_request, gpt35_turbo_0613_request 
 
 eval_model = sys.argv[1]  # e.g., llama3_request, GPT_Instruct_request, ChatGPT_request, Phi
 date = sys.argv[2]
@@ -19,12 +19,12 @@ noises = ast.literal_eval(sys.argv[5])
 benchmark = sys.argv[6]
 
 # Model selection
-if eval_model == "llama3_request":
+if eval_model == "llama4_request":
     assess_model = llama4_maverick_request
-elif eval_model == "GPT_Instruct_request":
-    assess_model = GPT_Instruct_request
-elif eval_model == "ChatGPT_request":
-    assess_model = ChatGPT_request
+elif eval_model == "mistral7b_instruct_request":
+    assess_model = mistral7b_instruct_request
+elif eval_model == "gpt35_turbo_0613_request":
+    assess_model = gpt35_turbo_0613_request
 elif eval_model == "Phi":
     assess_model = Microsoft_Phi4_request
 else:
@@ -37,7 +37,7 @@ def _run_nli_GPT3turbo(case, topk):
     while True:
         try:
             text = assess_model(prompt)
-            time.sleep(5)  # Respect API rate limit
+            time.sleep(10)  # Respect API rate limit
             break
         except Exception as e:
             print(f"An error occurred: {e}")
@@ -60,13 +60,13 @@ def process_slice(slice_cases, topk):
         outs.append(case)
     return outs
 
-if eval_model == "llama3_request":
-    eval_method = "eval_llama3"
-elif eval_model == "GPT_Instruct_request":
-    eval_method = "eval_3.5instruct"
+if eval_model == "llama4_request":
+    eval_method = "eval_llama4"
+elif eval_model == "mistral7b_instruct_request":
+    eval_method = "eval_mistral7b"
 elif eval_model == "Phi":
     eval_method = "eval_phi"
-elif eval_model == "ChatGPT_request":
+elif eval_model == "gpt35_turbo_0613_request":
     eval_method = "eval_3.5turbo"
 else:
     eval_method = eval_model
