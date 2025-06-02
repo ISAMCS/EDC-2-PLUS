@@ -7,6 +7,7 @@ __pycache__/
 
 .env/
 .env
+EDC-2-RAG-NEW.git.bfg-report
 
 # Virtual environments
 .venv/
