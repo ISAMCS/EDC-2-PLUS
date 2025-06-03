@@ -9,10 +9,10 @@ import concurrent.futures
 import sys
 from sklearn.metrics import roc_auc_score
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
-from codes.text_utils llama4_maverick_request
-eval_model = llama4_maverick_request
+from codes.text_utils import llama4_maverick_request, Microsoft_Phi4_request, mistral7b_instruct_request, gpt35_turbo_0613_request
 import ast
 
+eval_model = gpt35_turbo_0613_request
 
 date = sys.argv[1]
 dataset = sys.argv[2]
@@ -57,27 +57,20 @@ def process_slice(slice_cases):
         case["extracted_answer"] = text
     return slice_cases
 
-def run(topk,noise):
+def run(topk, noise):
     global eval_method, date, dataset, etype
     if etype == "rag":
-        case_file = f"../{benchmark}/results/{date}_{dataset}_rag_{eval_method}_noise{noise}_topk{topk}.json"
-        res_file = f"../{benchmark}/extracted_answer/{date}_{dataset}_rag_{eval_method}_noise{noise}_topk{topk}.json"
+        case_file = f"{benchmark}/results/{date}_{dataset}_rag_{eval_method}_noise{noise}_topk{topk}.json"
+        res_file = f"{benchmark}/extracted_answer/{date}_{dataset}_rag_{eval_method}_noise{noise}_topk{topk}.json"
     with open(case_file, "r", encoding="utf-8") as lines:
         cases = json.load(lines)
-        json_data = []
-        num_slices = 10
-        slice_length = len(cases) // num_slices
-        slices = [cases[i:i+slice_length] for i in range(0, len(cases), slice_length)]
-        final_result = []
-        results = []
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            results = executor.map(process_slice, slices)
-        for result in results:
-            final_result.extend(result)
-        with open(res_file, "w", encoding = "utf-8" ) as json_file:
-            json.dump(final_result, json_file,  ensure_ascii=False, indent=4)
+        # Sequentially process all cases
+        final_result = process_slice(cases)
+        with open(res_file, "w", encoding="utf-8") as json_file:
+            json.dump(final_result, json_file, ensure_ascii=False, indent=4)
 
 for topk in topkk:
     for noise in noises:
         run(topk, noise)
         print(f"In Extracted Answer TopkK:{topk} Noise:{noise}")  
+# 这个脚本的目的是使用不同的模型（GPT-4、GPT-3.5、GPT-3.5-turbo和自定义的T5模型）来评估案例中的前提和断言之间的逻辑关系

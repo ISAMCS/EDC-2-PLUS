@@ -1,51 +1,66 @@
 import sys
 import subprocess
+eval_model = sys.argv[1] #llama4_maverick_request
+date = sys.argv[2] # 0602
+dataset = sys.argv[3] # full
+topkk = sys.argv[4] # "[20, 50, 70]"
+noises = sys.argv[5] # "[20 ,60, 80]"
+benchmark = sys.argv[6] # triviaq
 
-eval_model = sys.argv[1]  # llama3_request, GPT_Instruct_request, ChatGPT_request
-date = sys.argv[2]
-dataset = sys.argv[3]  # 400 or 113
-topkk = sys.argv[4]  # "[20, 50, 70]"
-noises = sys.argv[5]  # "[20 ,60, 80]"
-benchmark = sys.argv[6]
+'''
 
-doc_length = int(sys.argv[7]) if len(sys.argv) > 7 else 1000
-relevance_score = float(sys.argv[8]) if len(sys.argv) > 8 else 0.8
+source .venv/bin/activate
+pip install -r requirements.txt
+export PYTHONPATH=.
 
-summarization_method = select_summarization_method(doc_length, relevance_score)
-print(f"Selected summarization method: {summarization_method}")
+eval_model=gpt35_turbo_0613_request
+date=0602
+dataset=full
+topkk="[20]"
+noises="[40]"
+benchmark=triviaq
+
+gpt35_turbo_0613_request
+llama4_maverick_request
+local_hf_request
+
+python codes/eval_scripts/run_baseline_compress.py local_hf_request 0602 full "[20]" "[40]" triviaq
+
+python codes/eval_scripts/run_baseline_compress.py gpt35_turbo_0613_request 0603 full "[20]" "[40]" triviaq
+
+python codes/eval_scripts/run_baseline_compress.py llama4_maverick_request 0602 full "[20]" "[40]" triviaq
+
+'''
+
+#    python codes/eval_scripts/run_baseline_compress.py llama4_maverick_request 0602 full "[20]" "[40]" triviaq
+
+# Run dataset preparation
+
+#    python codes/datasets/make_datasets.py "$benchmark" "$eval_model" "$topkk" "$noises"
+subprocess.run(["python", "codes/datasets/make_datasets.py", benchmark, topkk, noises])
 
 print("start_to_run")
 print("start_to_summarize")
-subprocess.run([
-    "python", "codes/datasets/baseline_compress.py",
-    eval_model, date, dataset, topkk, noises, benchmark, summarization_method
-])
+# python codes/datasets/baseline_compress.py "$eval_model" "$date" "$dataset" "$topkk" "$noises" "$benchmark"
+subprocess.run(["python", "codes/datasets/baseline_compress.py", eval_model, date, dataset,topkk,noises,benchmark])
 print("end_summarize")
 print("start_to_eval")
-subprocess.run([
-    "python", "codes/run_methods/eval_baseline_compress.py",
-    eval_model, date, dataset, topkk, noises, benchmark, summarization_method
-])
+# python codes/run_methods/eval_baseline_compress.py "$eval_model" "$date" "$dataset" "$topkk" "$noises" "$benchmark"
+subprocess.run(["python", "codes/run_methods/eval_baseline_compress.py", eval_model, date, dataset,topkk,noises,benchmark])
 print("end_eval")
 print("start_to_extract_answer")
-if eval_model == "llama4_request":
-    eval_method = "eval_llama4"
-elif eval_model == "GPT_Instruct_request":
-    eval_method = "eval_3.5instruct"
-elif eval_model == "ChatGPT_request":
-    eval_method = "eval_3.5turbo"
-elif eval_model == "GPT4o_request":
-    eval_method = "eval_4o"
-elif eval_model == "qwen_request":
-    eval_method = "eval_qwen"
-subprocess.run([
-    "python", "codes/eval_metric/extracted_answer_topkk_compress.py",
-    date, dataset, eval_method, topkk, noises, benchmark, summarization_method
-])
+print("start_to_extract_answer")
+eval_method = {
+    "llama4_request": "llama4",
+    "Phi_request": "Phi",
+    "mistral7b_instruct_request": "mistral7b",
+    "gpt35_turbo_0613_request": "3.5turbo",
+    "local_hf_request": "local"
+}.get(eval_model, eval_model)
+# python codes/eval_metric/extracted_answer_topkk_compress.py "$date" "$dataset" "local" "$topkk" "$noises" "$benchmark"
+subprocess.run(["python", "codes/eval_metric/extracted_answer_topkk_compress.py", date, dataset, eval_method, topkk, noises,benchmark])
 print("end_extracte_answer")
-print("start_to_caculate_F1_EM")
-subprocess.run([
-    "python", "codes/eval_metric/caculate_F1_EM_compress.py",
-    date, dataset, eval_method, topkk, noises, benchmark, summarization_method
-])
+print("start_to_caculate_F1_EM")   
+# python codes/eval_scripts/run_baseline_compress.py "local" "$date" "$dataset" "$topkk" "$noises" "$benchmark"
+subprocess.run(["python", "codes/eval_metric/caculate_F1_EM_compress.py", date, dataset, eval_method, topkk, noises, benchmark])
 print("end_caculate_F1_EM")

@@ -69,26 +69,20 @@ def process_slice(slice_cases):
 
 for topk in topkk:
     for noise in noises:
-        res_file = f"../../{benchmark}/datasets/case_{dataset}_{benchmark}_ddtags_noise{noise}_topk{topk}_dynamic_{length}_embedding.json"
+        res_file = f"{benchmark}/datasets/case_{dataset}_{benchmark}_ddtags_noise{noise}_topk{topk}_dynamic_{length}_embedding.json"
         if dataset == "redundancy":
             if topk == 30:
                 case_file = f"/disks/disk1/private/lwt/wikipedia/to_retrieve/DocGraph/QA_datasets_new/webq/datasets/case_0329_rewrite_3.5turbo_webq_noise{noise}_topk{topk}_embedding.json"
             else:
                 case_file = f"/disks/disk1/private/lwt/wikipedia/to_retrieve/DocGraph/QA_datasets_new/webq/datasets/case_0327_rewrite_3.5turbo_webq_noise{noise}_topk{topk}_embedding.json"
         else:
-            case_file = f"../../{benchmark}/datasets/{benchmark}_results_random_{dataset}_w_negative_passages_noise{noise}_topk{topk}_embedding.json"
+            case_file = f"{benchmark}/datasets/{benchmark}_results_random_{dataset}_w_negative_passages_noise{noise}_topk{topk}_embedding.json"
         with open(case_file, "r", encoding="utf-8") as lines:
             cases = json.load(lines)
-            json_data = []
-            num_slices = 10
-            slice_length = len(cases) // num_slices
-            slices = [cases[i:i+slice_length] for i in range(0, len(cases), slice_length)]
-            final_result = []
-            # 并行评测八份切片
-            results = []
-
-            with concurrent.futures.ThreadPoolExecutor() as executor:
-                results = executor.map(process_slice, slices)
+            # Sequentially process all cases
+            final_result = process_slice(cases)
+            with open(res_file, "w", encoding="utf-8") as json_file:
+                json.dump(final_result, json_file, ensure_ascii=False, indent=4)
             
             # 合并八份切片的结果
             for result in results:

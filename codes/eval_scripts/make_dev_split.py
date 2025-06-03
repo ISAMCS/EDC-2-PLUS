@@ -55,13 +55,12 @@ def main():
         })
         count += 1
 
-    triviaq_dir = os.path.join(repo_root, "triviaq", "datasets")
-    os.makedirs(triviaq_dir, exist_ok=True)
+    output_path = os.path.join(repo_root, DATASET, "datasets", f"{DATASET}_results_w_negative_passages_full.json")
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
-    triviaq_dev_path = os.path.join(triviaq_dir, "dev.json")
-    with open(triviaq_dev_path, "w", encoding="utf-8") as f:
+    with open(output_path, "w", encoding="utf-8") as f:
         json.dump(examples, f, ensure_ascii=False, indent=2)
-    print(f"Wrote {triviaq_dev_path} ({len(examples)} examples)")
+    print(f"Wrote {output_path} ({len(examples)} examples)")
 
 if __name__ == "__main__":
     main()

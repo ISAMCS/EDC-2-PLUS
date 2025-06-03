@@ -11,6 +11,8 @@ etype = sys.argv[4]
 topkk = ast.literal_eval(sys.argv[5])
 noises = ast.literal_eval(sys.argv[6])
 benchmark = sys.argv[7]
+# 读取json文件
+#python caculate_F1_EM.py 1202 400 eval_3.5turbo rag
 results = []
 def normalize_text(text):
     text = text.lower()
@@ -35,9 +37,11 @@ def compute_metrics(dataset):
         answers = data["answers"]
         pred = normalize_text(pred)
         answers = [normalize_text(ans) for ans in answers]
+        # 计算完全匹配
         em = int(any(pred == ans for ans in answers))
         em_total += em
 
+        # 计算F1指数
         f1 = max(compute_f1(pred, ans) for ans in answers)
         f1_total += f1
 
@@ -47,13 +51,13 @@ def compute_metrics(dataset):
 for topk in topkk:
     for noise in noises:
         if etype == "rag":
-            input_file = f"../../{benchmark}/extracted_answer/{date}_{dataset}_rag_{eval_method}_noise{noise}_topk{topk}.json"
+            input_file = f"{benchmark}/extracted_answer/{date}_{dataset}_rag_{eval_method}_noise{noise}_topk{topk}.json"
             with open(input_file, "r", encoding="utf-8") as f:
                 datasets = json.load(f)
             em_score, f1_score = compute_metrics(datasets)
             print(f"{input_file}: EM: {em_score}, F1: {f1_score}")
             results.append([topk, noise, em_score, f1_score])                    
 df = pd.DataFrame(results, columns=["TopK", "Noise", "EM Score", "F1 Score"]).T
-output_file = f"triviaq/extracted_answer/{date}_{dataset}_rag_{eval_method}_noise{noises}_topk{topkk}.xlsx"
+output_file = f"{benchmark}/tables/{date}_{dataset}_rag_{eval_method}_noise{noises}_topk{topkk}.xlsx"
 df.to_excel(output_file, index=False)
 print(f"Results saved to {output_file}")

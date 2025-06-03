@@ -6,12 +6,10 @@ import sys
 import requests
 from requests.auth import HTTPBasicAuth
 import concurrent.futures
-from utils import GPT_Instruct_request, ChatGPT_request, llama3_request, GPT4o_request, qwen_request
+from codes.datasets.utils import llama4_maverick_request, Microsoft_Phi4_request, mistral7b_instruct_request, gpt35_turbo_0613_request
 import re
 import ast
 from copy import deepcopy 
-#from fastchat.model import load_model
-
 
 topkk = ast.literal_eval(sys.argv[1])
 noises = ast.literal_eval(sys.argv[2])
@@ -23,16 +21,14 @@ summary_prompt = sys.argv[7]
 clustering_type = sys.argv[8]
 benchmark = sys.argv[9]
 
-if eval_model == "llama3_request":
-    assess_model = llama3_request
-elif eval_model == "GPT_Instruct_request":
-    assess_model = GPT_Instruct_request
-elif eval_model == "ChatGPT_request":
-    assess_model = ChatGPT_request
-elif eval_model == "GPT4o_request":
-    assess_model = GPT4o_request
-elif eval_model == "qwen_request":
-    assess_model = qwen_request
+if eval_model == "llama4_request":
+    assess_model = llama4_maverick_request
+elif eval_model == "Phi":
+    assess_model = Microsoft_Phi4_request
+elif eval_model == "mistral7b_instruct_request":
+    assess_model = mistral7b_instruct_request
+elif eval_model == "gpt35_turbo_0613_request":
+    assess_model = gpt35_turbo_0613_request
 
 filter_paragraph = ["No content to", "no content to", "I'm sorry", "I am sorry", "I can not provide", "I can't provide", "Could you clarify", "Sorry, I", "Could you clarify", "?"]
 
@@ -110,37 +106,21 @@ def process_slice(slice_cases):
 
 def run(topk, noise):
     global eval_model, date, dataset, length, summary_prompt
-    if eval_model == "llama3_request":
-        eval_method = "llama3"
-    elif eval_model == "GPT_Instruct_request":
-        eval_method = "3.5instruct"
-    elif eval_model == "ChatGPT_request":
-        eval_method = "3.5turbo"
-    elif eval_model == "GPT4o_request":
-        eval_method = "4o"
-    elif eval_model == "qwen_request":
-        eval_method = "qwen"
-    res_file = f"../../{benchmark}/datasets/case_{date}_summary_{eval_method}_{summary_prompt}_{dataset}_results_ddtags_{clustering_type}_{length}_noise{noise}_topk{topk}.json"
-    case_file = f"../../{benchmark}/datasets/case_{dataset}_{benchmark}_ddtags_noise{noise}_topk{topk}_{clustering_type}_{length}_embedding.json"
+    eval_method = {
+        "llama4_request": "llama4",
+        "Phi_request": "Phi",
+        "ChatGPT_request": "3.5turbo",
+        "mistral7b_instruct_request": "mistral7b",
+        "gpt35_turbo_0613_request": "3.5turbo"
+    }.get(eval_model, eval_model)
+    res_file = f"{benchmark}/datasets/case_{date}_summary_{eval_method}_{summary_prompt}_{dataset}_results_ddtags_{clustering_type}_{length}_noise{noise}_topk{topk}.json"
+    case_file = f"{benchmark}/datasets/case_{dataset}_{benchmark}_ddtags_noise{noise}_topk{topk}_{clustering_type}_{length}_embedding.json"
     with open(case_file, "r", encoding="utf-8") as lines:
         cases = json.load(lines)
-        json_data = []
-        num_slices = 40
-        slice_length = len(cases) // num_slices
-        slices = [cases[i:i+slice_length] for i in range(0, len(cases), slice_length)]
-        final_result = []
-        # 并行评测八份切片
-        results = []
-
-        with concurrent.futures.ThreadPoolExecutor() as executor:
-            results = executor.map(process_slice, slices)
-        
-        # 合并八份切片的结果
-        for result in results:
-            final_result.extend(result)
-
-        with open(res_file, "w", encoding = "utf-8" ) as json_file:
-            json.dump(final_result, json_file,  ensure_ascii=False, indent=4)
+        # Sequentially process all cases
+        final_result = process_slice(cases)
+        with open(res_file, "w", encoding="utf-8") as json_file:
+            json.dump(final_result, json_file, ensure_ascii=False, indent=4)
 
 for topk in topkk:
     for noise in noises:

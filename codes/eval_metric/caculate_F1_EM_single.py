@@ -1,5 +1,4 @@
 import json
-import os
 from sklearn.metrics import precision_score, recall_score
 import sys
 from nltk.tokenize import word_tokenize
@@ -7,6 +6,7 @@ from nltk.tokenize import word_tokenize
 date = sys.argv[1]
 dataset = sys.argv[2]
 eval_method = sys.argv[3]
+# 读取json文件
 benchmark = sys.argv[4]
 
 def normalize_text(text):
@@ -32,24 +32,19 @@ def compute_metrics(dataset):
         answers = data["answers"]
         pred = normalize_text(pred)
         answers = [normalize_text(ans) for ans in answers]
+        # 计算完全匹配
         em = int(any(pred == ans for ans in answers))
         em_total += em
 
+        # 计算F1指数
         f1 = max(compute_f1(pred, ans) for ans in answers)
         f1_total += f1
 
     em_score = em_total / len(dataset)
     f1_score = f1_total / len(dataset)
     return round(em_score*100,2), round(f1_score*100,2)
-REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../"))
 
-eval_method_clean = eval_method.replace("eval_", "").replace("eval", "")
-input_file = os.path.join(
-    REPO_ROOT,
-    benchmark,
-    "extracted_answer",
-    f"{date}_{dataset}_baseline_wo_retrieve_{eval_method_clean}.json"
-)
+input_file = f"{benchmark}/extracted_answer/{date}_{dataset}_baseline_wo_retrieve_{eval_method}.json"
 with open(input_file, "r", encoding="utf-8") as f:
     datasets = json.load(f)
 em_score, f1_score = compute_metrics(datasets)

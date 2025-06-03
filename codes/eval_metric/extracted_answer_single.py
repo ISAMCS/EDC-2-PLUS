@@ -9,31 +9,33 @@ import concurrent.futures
 import sys
 from sklearn.metrics import roc_auc_score
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
-from codes.text_utils import llama4_maverick_request
-eval_model = llama4_maverick_request
+from codes.text_utils import llama4_maverick_request, Microsoft_Phi4_request, mistral7b_instruct_request, gpt35_turbo_0613_request, local_hf_request
+# CHANGE THIS TO THE DESIRED MODEL FUNCTION
+eval_model =  llama4_maverick_request
 
 date = sys.argv[1]
 dataset = sys.argv[2]
 eval_method = sys.argv[3]
 benchmark = sys.argv[4]
-
 def _run_nli_GPT3turbo(case):
     prompt = f"""Task Description:
-You need to extract the essential information from a generated answer and reformat it to match the structure of the golden answer. We will provide a question, a golden nnswer, and a generated answer. Carefully compare the generated answer with the golden answer, and extract key information from the generated answer to make it as close as possible to the golden answer in format. This will facilitate subsequent evaluation using Exact Match (EM) and F1 metrics.
+You are given a question, a list of possible answer choices (the "Golden Answer" list), and a generated answer. Your task is to extract only the essential keywords or phrases from the generated answer that best match one of the provided answer choices, with no extra words or rephrasing. Select the answer choice that is the closest match in meaning and wording, guided by the context and the answer list. Do not add information not present in the answer choices. Your output should be the single best-matching answer choice, exactly as it appears in the list.
 
 Input:
 
 Question: {case["question"]}
-Golden Answer: {case["answers"][0]}
+Answer Choices: {case["answers"]}
 Generated Answer: {case["response"]}
-Requirements:
 
-Extract information from the generated answer that corresponds to the essential content of the golden answer.
-Reorganize the extracted content to align with the structure of the golden answer, including phrasing and order of information where relevant.
-If the generated answer contains information not covered in the golden answer, include only information crucial to answering the question. Disregard redundant or irrelevant details.
+Instructions:
+
+- Compare the generated answer to the list of answer choices.
+- Select and output only the answer choice that matches the generated answer most closely in meaning and wording.
+- If there are multiple close matches, choose the one that is most similar in form and content.
+- Do not add extra words, explanations, or rephrase the answer.
+- Output only the selected answer choice, exactly as it appears in the list.
+
 Output Format:
-Provide a reformatted answer, aligned as closely as possible with the golden answer:
-
 Reformatted Answer: """
     res = 0
     while (True):
@@ -53,31 +55,13 @@ def process_slice(slice_cases):
 
 def run():
     global eval_method, date, dataset
-    base_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
-    res_file = os.path.join(
-        base_dir,
-        benchmark,
-        "extracted_answer",
-        f"{date}_full_baseline_wo_retrieve_llama3.json"
-    )
-    case_file = os.path.join(
-        base_dir,
-        benchmark,
-        "results",
-        f"{date}_{dataset}_baseline_wo_retrieve_eval_llama3.json"
-    )
-    os.makedirs(os.path.dirname(res_file), exist_ok=True)
+    res_file = f"{benchmark}/extracted_answer/{date}_{dataset}_baseline_wo_retrieve_{eval_method}.json"
+    case_file = f"{benchmark}/results/{date}_{dataset}_baseline_wo_retrieve_{eval_method}.json"
     with open(case_file, "r", encoding="utf-8") as lines:
         cases = json.load(lines)
-    json_data = []
-    num_slices = 10
-    slice_length = len(cases) // num_slices
-    slices = [cases[i:i+slice_length] for i in range(0, len(cases), slice_length)]
-    final_result = []
-    results = []
-    for slice_cases in slices:
-        result = process_slice(slice_cases)
-        final_result.extend(result)
-    with open(res_file, "w", encoding="utf-8") as json_file:
-        json.dump(final_result, json_file, ensure_ascii=False, indent=4) 
+        # Sequentially process all cases
+        final_result = process_slice(cases)
+        with open(res_file, "w", encoding="utf-8") as json_file:
+            json.dump(final_result, json_file, ensure_ascii=False, indent=4)
+
 run()

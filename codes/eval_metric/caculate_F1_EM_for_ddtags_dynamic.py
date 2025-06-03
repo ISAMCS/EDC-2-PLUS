@@ -58,6 +58,6 @@ for topk in topkk:
         print(f"{input_file}: EM: {em_score}, F1: {f1_score}")
         results.append([topk, noise, em_score, f1_score])
 df = pd.DataFrame(results, columns=["TopK", "Noise", "EM Score", "F1 Score"]).T
-output_file = f"../../{benchmark}/tables/{date}_{dataset}_ours_summary_{summary_prompt}_ddtags_{clustering_type}_{length}_{eval_method}_noise{noises}_topk{topkk}.xlsx"
+output_file = f"{benchmark}/tables/{date}_{dataset}_ours_summary_{summary_prompt}_ddtags_{clustering_type}_{length}_{eval_method}_noise{noises}_topk{topkk}.xlsx"
 df.to_excel(output_file, index=False)
 print(f"Results saved to {output_file}")

@@ -9,9 +9,9 @@ import time
 from copy import deepcopy
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
-from codes.text_utils import llama4_maverick_request, Microsoft_Phi4_request, mistral7b_instruct_request, gpt35_turbo_0613_request 
+from codes.text_utils import llama4_maverick_request, Microsoft_Phi4_request, mistral7b_instruct_request, gpt35_turbo_0613_request, local_hf_request 
 
-eval_model = sys.argv[1]  # e.g., llama3_request, GPT_Instruct_request, ChatGPT_request, Phi
+eval_model = sys.argv[1] 
 date = sys.argv[2]
 dataset = sys.argv[3]
 topkk = ast.literal_eval(sys.argv[4])
@@ -27,13 +27,18 @@ elif eval_model == "gpt35_turbo_0613_request":
     assess_model = gpt35_turbo_0613_request
 elif eval_model == "Phi":
     assess_model = Microsoft_Phi4_request
+elif eval_model == "local_hf_request":
+    assess_model = local_hf_request
 else:
     raise ValueError(f"Unknown model name: {eval_model}")
 
 def _run_nli_GPT3turbo(case, topk):
     # Build reference text from summary_docs_baseline
     ref_text = "\n".join([f"{i+1}.{case['summary_docs_baseline'][i]}" for i in range(min(topk, len(case.get('summary_docs_baseline', []))))])
-    prompt = ("Instruction:\nPlease refer to the following text and answer the following question in simple words.\n\nQuestion:\n{}\n\nReference text:\n{}\n\nAnswer:".format(case["question"], ref_text))
+    prompt = (
+        "Instruction:\nPlease refer to the following text and answer the following question in simple words.\n\n"
+        "Question:\n{}\n\nReference text:\n{}\n\nAnswer:".format(case["question"], ref_text)
+    )
     while True:
         try:
             text = assess_model(prompt)
@@ -60,16 +65,13 @@ def process_slice(slice_cases, topk):
         outs.append(case)
     return outs
 
-if eval_model == "llama4_request":
-    eval_method = "eval_llama4"
-elif eval_model == "mistral7b_instruct_request":
-    eval_method = "eval_mistral7b"
-elif eval_model == "Phi":
-    eval_method = "eval_phi"
-elif eval_model == "gpt35_turbo_0613_request":
-    eval_method = "eval_3.5turbo"
-else:
-    eval_method = eval_model
+eval_method = {
+    "llama4_request": "llama4",
+    "Phi_request": "Phi",
+    "mistral7b_instruct_request": "mistral7b",
+    "gpt35_turbo_0613_request": "3.5turbo",
+    "local_hf_request" : "local_hf"
+}.get(eval_model, eval_model)
 
 def run(topk, noise):
     global eval_method, date, dataset, benchmark

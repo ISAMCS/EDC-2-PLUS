@@ -1,6 +1,3 @@
-'''
-python codes/datasets/classify_noise_topk.py triviaq
-'''
 import json
 import copy
 import sys
@@ -46,3 +43,4 @@ for topk in topk_list:
             outs.append(out)
         with open(output_file, "w", encoding="utf-8") as json_file:
             json.dump(outs, json_file, ensure_ascii=False, indent=4)
+

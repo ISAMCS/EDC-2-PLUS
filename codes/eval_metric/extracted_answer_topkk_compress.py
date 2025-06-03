@@ -1,5 +1,3 @@
-# python codes/eval_metric/extracted_answer_topkk_compress.py 0601 full eval_llama3 "[20]" "[40]" triviaq
-
 import torch
 import json
 from tqdm import tqdm
@@ -10,7 +8,8 @@ from requests.auth import HTTPBasicAuth
 import sys
 from sklearn.metrics import roc_auc_score
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
-from codes.text_utils import llama4_maverick_request, Microsoft_Phi4_request, mistral7b_instruct_request, gpt35_turbo_0613_request
+from codes.text_utils import llama4_maverick_request, Microsoft_Phi4_request, mistral7b_instruct_request, gpt35_turbo_0613_request, local_hf_request
+# CHANGE THIS TO THE DESIRED MODEL FUNCTION
 eval_model = gpt35_turbo_0613_request
 import ast
 import time

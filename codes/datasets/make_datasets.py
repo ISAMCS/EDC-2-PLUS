@@ -2,12 +2,14 @@ import sys
 import subprocess
 import os 
 
+#  python codes/datasets/make_datasets.py triviaq llama4_maverick_request "[20]" "[40]"
+
 dataset = sys.argv[1]
-env = os.environ.copy()
-env["CUDA_VISIBLE_DEVICES"] = "2"  # 只使用第0号GPU
+topkk = sys.argv[2]  # e.g. "[20]"
+noises = sys.argv[3] # e.g. "[40]"
 
-subprocess.run(["python", "codes/datasets/get_embedding.py", dataset], env=env)
+# python codes/datasets/get_embedding.py triviaq llama4_maverick_request
+subprocess.run(["python", "codes/datasets/get_embedding.py", dataset])
 print("start_to_classify_docs")
-subprocess.run(["python", "codes/datasets/classify_noise_topk.py", dataset])
-
-
+# python codes/datasets/classify_noise_topk.py triviaq llama4_maverick_request "[20]" "[40]"
+subprocess.run(["python", "codes/datasets/classify_noise_topk.py", dataset, topkk, noises])
