@@ -11,32 +11,47 @@ from sklearn.metrics import roc_auc_score
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 from codes.text_utils import llama4_maverick_request, Microsoft_Phi4_request, mistral7b_instruct_request, gpt35_turbo_0613_request, local_hf_request
 # CHANGE THIS TO THE DESIRED MODEL FUNCTION
-eval_model =  llama4_maverick_request
+eval_model =  gpt35_turbo_0613_request
 
 date = sys.argv[1]
 dataset = sys.argv[2]
 eval_method = sys.argv[3]
 benchmark = sys.argv[4]
+
+def extract_clean_answer(raw_text):
+    for line in raw_text.splitlines():
+        if "Reformatted Answer:" in line:
+            return line.split("Reformatted Answer:")[-1].strip()
+    return raw_text.strip()
+
+
 def _run_nli_GPT3turbo(case):
     prompt = f"""Task Description:
-You are given a question, a list of possible answer choices (the "Golden Answer" list), and a generated answer. Your task is to extract only the essential keywords or phrases from the generated answer that best match one of the provided answer choices, with no extra words or rephrasing. Select the answer choice that is the closest match in meaning and wording, guided by the context and the answer list. Do not add information not present in the answer choices. Your output should be the single best-matching answer choice, exactly as it appears in the list.
+    You need to extract the essential answer from a generated answer and reformat it to match the style and structure of the golden answer. We will provide a question, a list of acceptable golden answers, and a generated answer. Your job is to extract the key answer from the generated answer, and rewrite it as concisely as possible, matching the phrasing and format of the golden answers. Do not include extra context or full sentences—just the answer itself.
 
-Input:
+    Input:
 
-Question: {case["question"]}
-Answer Choices: {case["answers"]}
-Generated Answer: {case["response"]}
+    Question: {case["question"]}
+    Golden Answers: {case["answers"]}
+    Generated Answer: {case["response"]}
 
-Instructions:
+    Requirements:
+    - Extract only the essential answer from the generated answer.
+    - Reformat it to match the style and structure of the golden answers (e.g., short phrase or noun, not a full sentence).
+    - If possible, select or closely match one of the golden answers.
+    - Do not include any extra explanation or context.
 
-- Compare the generated answer to the list of answer choices.
-- Select and output only the answer choice that matches the generated answer most closely in meaning and wording.
-- If there are multiple close matches, choose the one that is most similar in form and content.
-- Do not add extra words, explanations, or rephrase the answer.
-- Output only the selected answer choice, exactly as it appears in the list.
-
-Output Format:
-Reformatted Answer: """
+    Output Format:
+    Reformatted Answer: <your concise answer here>
+    """
+    res = 0
+    while (True):
+        try:
+            text = eval_model(prompt)
+            break
+        except Exception as e:
+            print(f"An error occurred: {e}")
+    return text
     res = 0
     while (True):
         try:
@@ -50,7 +65,7 @@ def process_slice(slice_cases):
     for case in tqdm(slice_cases):
         res=0
         text = _run_nli_GPT3turbo(case)
-        case["extracted_answer"] = text
+        case["extracted_answer"] = extract_clean_answer(text)
     return slice_cases
 
 def run():

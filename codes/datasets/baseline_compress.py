@@ -13,6 +13,7 @@ from codes.datasets.utils import llama4_maverick_request, Microsoft_Phi4_request
 import re
 import string
 import ast
+from copy import deepcopy
 
 
 eval_model = sys.argv[1] 
@@ -68,34 +69,45 @@ def extract_best_answer(passages, gold_answers):
 
 filter_paragraph = ["No content to", "no content to", "I'm sorry", "I am sorry", "I can not provide", "I can't provide", "Could you clarify", "Sorry, I", "Could you clarify", "?"]
 
-def _run_nli_GPT3(question, answers, doc):
+def _run_nli_GPT3(num, docs, question):
+    global eval_model
     prompt = f"""
-    You are given a question, a list of possible correct answers, and a document. Extract any key point or evidence from the document that directly answers the question, especially if it matches or supports any of the provided answers.
+    **#Instruction#:** You are given a question and {num} documents. Rewrite each document to keep only the information that directly helps answer the question.
 
-    - Focus only on information relevant to the question and answers.
-    - Use concise language and quote or closely paraphrase the document's wording.
-    - Do not add any information that is not present in the document.
-    - If the document does not contain relevant information, respond with: "No content to extract."
-    - If possible, return only the relevant phrase or sentence, not the whole document.
+    **#Question#:** "{question}"
 
-    Question: {question}
-    Possible Answers: {answers}
-    Document: {doc}
-    Relevant content:
+    **#Goal#:** Keep only the content relevant to answering the question. Discard all irrelevant or misleading information.
+
+    **#Important Rules**:
+    - Focus only on entities or facts that meet **all criteria specified in the question** (e.g., group membership, nationality, naming pattern, location, or other attributes).
+    - You MUST:
+    - Only retain information about entities that **satisfy the requirements described in the question**.
+    - Exclude information about entities that **do not meet the criteria**, even if they are commonly associated with the general topic.
+    - Include infromation even if it is not widely known in general knowndlege if it is relevant to the question (e.g., If the prompt mentions a scottish team yet that team it not widely know, still include it.)
+    - If an entity is referenced ambiguously (e.g., by a partial name or pronoun), use surrounding context to determine if it fits the required criteria.
+    - Discard information about all entities or facts that do **not** satisfy the question's constraints.
+    - Retain information even if the reference is implicit, as long as context supports its relevance to the question.
+
+    **#Documents#:**
+    {docs}
+
+    **#Rewritten Documents#:**
+    1. <to be rewritten>  
+    2. <to be rewritten>  
+    ...  
+    {num}. <to be rewritten>
     """
-
     while True:
         try:
             text = assess_model(prompt)
-            if not text or "No content" in text:
-                return "No content to extract."
-            return text.split("\n")[0].strip()
+            return text.strip()
         except Exception as e:
             print(f"An error occurred: {e}")
-            exit(1)   # Exit on error to avoid infinite loop
 
 def extract_numbered_sections(text):
-
+    """
+    解析 GPT 生成的文本，按 `1. 2. 3. ...` 的格式提取内容
+    """
     sections = {}
     lines = text.split("\n")
     current_index = None
@@ -125,29 +137,26 @@ def process_slice(slice_cases):
             docs = [case['passages'][i]['text'].strip() for i in range(min(topk, len(case['passages'])))]
         compressed_docs = []
         times = 0
-
-        question = case.get("question", "")
-        answers = case.get("answers", [""])
-
+        question = case.get("question")
+        
         for i in range(0, len(docs), 20):
             doc_chunk = "\n\n".join([f"{j+1}. {doc}" for j, doc in enumerate(docs[i:i+20])])
             k = 0
             extracted_docs = []
-
+            
             while len(extracted_docs) != len(docs[i:i+20]) and k < 3:
-                compressed_text = _run_nli_GPT3(question, answers, doc_chunk)
+                compressed_text = _run_nli_GPT3(len(docs[i:i+20]), doc_chunk, question=question)
                 extracted_docs = extract_numbered_sections(compressed_text)
                 k += 1
                 times += 1
-
+            
             if len(extracted_docs) != len(docs[i:i+20]):
                 extracted_docs = docs[i:i+20]
-
+            
             compressed_docs.extend(extracted_docs)
-
+        
         case["summary_docs_baseline"] = compressed_docs
     return slice_cases
-
 
 def run(topk, noise):
     global eval_model, date, dataset, benchmark

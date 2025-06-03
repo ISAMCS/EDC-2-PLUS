@@ -14,11 +14,12 @@ pip install -r requirements.txt
 export PYTHONPATH=.
 
 eval_model=gpt35_turbo_0613_request
-date=0602
+date=0603
 dataset=full
 topkk="[20]"
 noises="[40]"
 benchmark=triviaq
+eval_method=3.5turbo
 
 gpt35_turbo_0613_request
 llama4_maverick_request
@@ -42,7 +43,7 @@ subprocess.run(["python", "codes/datasets/make_datasets.py", benchmark, topkk, n
 print("start_to_run")
 print("start_to_summarize")
 # python codes/datasets/baseline_compress.py "$eval_model" "$date" "$dataset" "$topkk" "$noises" "$benchmark"
-#subprocess.run(["python", "codes/datasets/baseline_compress.py", eval_model, date, dataset,topkk,noises,benchmark])
+subprocess.run(["python", "codes/datasets/baseline_compress.py", eval_model, date, dataset,topkk,noises,benchmark])
 print("end_summarize")
 print("start_to_eval")
 # python codes/run_methods/eval_baseline_compress.py "$eval_model" "$date" "$dataset" "$topkk" "$noises" "$benchmark"
@@ -57,10 +58,11 @@ eval_method = {
     "gpt35_turbo_0613_request": "3.5turbo",
     "local_hf_request": "local"
 }.get(eval_model, eval_model)
-# python codes/eval_metric/extracted_answer_topkk_compress.py "$date" "$dataset" "local" "$topkk" "$noises" "$benchmark"
+#    python codes/eval_scripts/run_baseline_compress.py gpt35_turbo_0613_request 0603 full "[20]" "[40]" triviaq
+# python codes/eval_metric/extracted_answer_topkk_compress.py "$date" "$dataset" "$eval_method" "$topkk" "$noises" "$benchmark"
 subprocess.run(["python", "codes/eval_metric/extracted_answer_topkk_compress.py", date, dataset, eval_method, topkk, noises,benchmark])
 print("end_extracte_answer")
 print("start_to_caculate_F1_EM")   
-# python codes/eval_scripts/run_baseline_compress.py "local" "$date" "$dataset" "$topkk" "$noises" "$benchmark"
+# python codes/eval_scripts/run_baseline_compress.py "$eval_method" "$date" "$dataset" "$topkk" "$noises" "$benchmark"
 subprocess.run(["python", "codes/eval_metric/caculate_F1_EM_compress.py", date, dataset, eval_method, topkk, noises, benchmark])
 print("end_caculate_F1_EM")

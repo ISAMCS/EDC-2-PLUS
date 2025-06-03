@@ -21,24 +21,52 @@ topkk = ast.literal_eval(sys.argv[4])
 noises = ast.literal_eval(sys.argv[5])
 benchmark = sys.argv[6]
 
+import re
+import string
+
+ANSWER_PREFIXES = [
+    r"^\s*reformatted answer\s*:\s*",
+    r"^\s*final answer\s*:\s*",
+    r"^\s*answer\s*:\s*"
+]
+
+def normalize(text: str) -> str:
+    """lower-case, drop articles, punctuation, and collapse spaces"""
+    text = text.lower()
+    text = re.sub(r"\b(a|an|the)\b", " ", text)
+    text = text.translate(str.maketrans("", "", string.punctuation))
+    return " ".join(text.split())
+
+def extract_clean_answer(raw: str) -> str:
+    """Pull the concise answer out of the model’s response."""
+    # 1) keep only the first non-empty line
+    first_line = next((ln for ln in raw.splitlines() if ln.strip()), "")
+    # 2) strip our prefixes (“Reformatted Answer:”, “Answer:”, …)
+    for p in ANSWER_PREFIXES:
+        first_line = re.sub(p, "", first_line, flags=re.I)
+    # 3) trim quotes / trailing punctuation like the period after ‘piano.’
+    first_line = first_line.strip().strip('“”"\'').rstrip(".")
+    return first_line
+
 def _run_nli_GPT3turbo(case):
-    prompt = f"""Task Description:
-You need to extract the essential information from a generated answer and reformat it to match the structure of the golden answer. We will provide a question, a golden answer, and a generated answer. Carefully compare the generated answer with the golden answer, and extract key information from the generated answer to make it as close as possible to the golden answer in format. This will facilitate subsequent evaluation using Exact Match (EM) and F1 metrics.
+    prompt = f"""Task:
 
-Input:
+    You are given a question, a golden answer, and a generated answer. Your job is to extract the key information from the generated answer and rewrite it to closely match the golden answer's content and format.
 
-Question: {case.get("question", "")}
-Golden Answer: {case.get("answers", [""])[0]}
-Generated Answer: {case.get("response", "")}
-Requirements:
+    Inputs:
+    - Question: {case.get("question", "")}
+    - Golden Answer: {case.get("answers", [""])[0]}
+    - Generated Answer: {case.get("response", "")}
 
-Extract information from the generated answer that corresponds to the essential content of the golden answer.
-Reorganize the extracted content to align with the structure of the golden answer, including phrasing and order of information where relevant.
-If the generated answer contains information not covered in the golden answer, include only information crucial to answering the question. Disregard redundant or irrelevant details.
-Output Format:
-Provide a reformatted answer, aligned as closely as possible with the golden answer:
+    Instructions:
+    1. Extract only the information from the generated answer that is essential to answering the question.
+    2. Rewrite the answer to match the golden answer's format and phrasing as closely as possible.
+    3. Ignore extra information that does not help answer the question.
+    4. Return the answer on a single line. Do **not** include full sentences, explanations, or punctuation unless present in the golden answer.
+    5. If no valid answer is found, leave the output blank after the colon.
 
-Reformatted Answer: """
+    Output:
+    Reformatted Answer: """
 
     while True:
         try:
@@ -58,7 +86,7 @@ def process_slice(slice_cases):
     for case in tqdm(slice_cases):
         res = 0
         text = _run_nli_GPT3turbo(case)
-        case["extracted_answer"] = text
+        case["extracted_answer"] = extract_clean_answer(text)
     return slice_cases
 
 def run(topk, noise):

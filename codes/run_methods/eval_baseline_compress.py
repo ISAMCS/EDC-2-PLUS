@@ -32,35 +32,36 @@ elif eval_model == "local_hf_request":
 else:
     raise ValueError(f"Unknown model name: {eval_model}")
 
-def _run_nli_GPT3turbo(case, topk):
-    # Build reference text from summary_docs_baseline
-    ref_text = "\n".join([f"{i+1}.{case['summary_docs_baseline'][i]}" for i in range(min(topk, len(case.get('summary_docs_baseline', []))))])
+def _run_nli_GPT3turbo(case):
+    global topk
+    topk = int(topk)
+    ref_text = "\n".join([f"{i+1}.{case['summary_docs_baseline'][i]}" for i in range(topk)])
     prompt = (
-        "Instruction:\nPlease refer to the following text and answer the following question in simple words.\n\n"
-        "Question:\n{}\n\nReference text:\n{}\n\nAnswer:".format(case["question"], ref_text)
-    )
-    while True:
+        "Instruction:\n"
+        "Please refer to the following text and answer the question in simple words.\n"
+        "If the question requires counting (e.g., 'How many teams end in United?'), count carefully for unique answers, count that as one, and list them explicitly.\n"
+        "If the answer requires deduction, explain your reasoning step by step before giving the final answer.\n"
+        "Show your work for counting or deduction if needed.\n\n"
+        "Question:\n{}\n\nReference text:\n{}\n\nAnswer:"
+    ).format(case["question"], ref_text)
+    res = 0
+    while (True):
         try:
             text = assess_model(prompt)
-            time.sleep(10)  # Respect API rate limit
             break
         except Exception as e:
             print(f"An error occurred: {e}")
-            if "429" in str(e):
-                print("Rate limit hit. Terminating program.")
-                sys.exit(1)
-            else:
-                time.sleep(10)
     return text
 
-def process_slice(slice_cases, topk):
+
+def process_slice(slice_cases):
     outs = []
     for case_1 in tqdm(slice_cases):
         case = deepcopy(case_1)
-        for passage in case.get('passages', []):
+        for passage in case['passages']:
             if 'embedding' in passage:
                 del passage['embedding']
-        text = _run_nli_GPT3turbo(case, topk)
+        text = _run_nli_GPT3turbo(case)
         case["response"] = text
         outs.append(case)
     return outs
@@ -76,11 +77,16 @@ eval_method = {
 def run(topk, noise):
     global eval_method, date, dataset, benchmark
     res_file = f"{benchmark}/results/{date}_{dataset}_compress_{eval_method}_noise{noise}_topk{topk}.json"
-    eval_method_1 = eval_method.split("_")[-1]
-    case_file = f"{benchmark}/datasets/case_{date}_{dataset}_summary_baseline_compress_{eval_method_1}_noise{noise}_topk{topk}.json"
+    case_file = f"{benchmark}/datasets/case_{date}_{dataset}_summary_baseline_compress_{eval_method}_noise{noise}_topk{topk}.json"
     with open(case_file, "r", encoding="utf-8") as lines:
         cases = json.load(lines)
-        final_result = process_slice(cases, topk)
+        num_slices = 10
+        slice_length = len(cases) // num_slices
+        slices = [cases[i:i+slice_length] for i in range(0, len(cases), slice_length)]
+        final_result = []
+        for slice_cases in slices:
+            result = process_slice(slice_cases)
+            final_result.extend(result)
         with open(res_file, "w", encoding="utf-8") as json_file:
             json.dump(final_result, json_file, ensure_ascii=False, indent=4)
 
