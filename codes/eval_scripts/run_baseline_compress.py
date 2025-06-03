@@ -42,7 +42,7 @@ subprocess.run(["python", "codes/datasets/make_datasets.py", benchmark, topkk, n
 print("start_to_run")
 print("start_to_summarize")
 # python codes/datasets/baseline_compress.py "$eval_model" "$date" "$dataset" "$topkk" "$noises" "$benchmark"
-subprocess.run(["python", "codes/datasets/baseline_compress.py", eval_model, date, dataset,topkk,noises,benchmark])
+#subprocess.run(["python", "codes/datasets/baseline_compress.py", eval_model, date, dataset,topkk,noises,benchmark])
 print("end_summarize")
 print("start_to_eval")
 # python codes/run_methods/eval_baseline_compress.py "$eval_model" "$date" "$dataset" "$topkk" "$noises" "$benchmark"

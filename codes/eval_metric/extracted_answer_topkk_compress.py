@@ -39,6 +39,7 @@ Output Format:
 Provide a reformatted answer, aligned as closely as possible with the golden answer:
 
 Reformatted Answer: """
+
     while True:
         try:
             text = eval_model(prompt)

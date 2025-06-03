@@ -83,6 +83,7 @@ def _run_nli_GPT3(question, answers, doc):
     Document: {doc}
     Relevant content:
     """
+
     while True:
         try:
             text = assess_model(prompt)
@@ -91,7 +92,7 @@ def _run_nli_GPT3(question, answers, doc):
             return text.split("\n")[0].strip()
         except Exception as e:
             print(f"An error occurred: {e}")
-            continue
+            exit(1)   # Exit on error to avoid infinite loop
 
 def extract_numbered_sections(text):
 
