@@ -37,13 +37,16 @@ def _run_nli_GPT3turbo(case):
     topk = int(topk)
     ref_text = "\n".join([f"{i+1}.{case['summary_docs_baseline'][i]}" for i in range(topk)])
     prompt = (
-        "Instruction:\n"
-        "Please refer to the following text and answer the question in simple words.\n"
-        "If the question requires counting (e.g., 'How many teams end in United?'), count carefully for unique answers, count that as one, and list them explicitly.\n"
-        "If the answer requires deduction, explain your reasoning step by step before giving the final answer.\n"
-        "Show your work for counting or deduction if needed.\n\n"
-        "Question:\n{}\n\nReference text:\n{}\n\nAnswer:"
-    ).format(case["question"], ref_text)
+        "## Instruction ##\n"
+        "Read ONLY the reference text below and answer the question in clear, simple words.\n"
+        "• If the question requires counting (e.g., “How many teams end in United?”), count unique items carefully and list them.\n"
+        "• If deduction is required, think step-by-step **internally**, but **do NOT show your reasoning**.\n"
+        "• Do NOT use any information not present in the reference text.\n"
+        "Return only the final answer after the tag **Final Answer:**, on a single line. If the answer cannot be determined from the reference text, write 'Unknown' after Final Answer:.\n\n"
+        "## Question ##\n{question}\n\n"
+        "## Reference Text ##\n{ref_text}\n\n"
+        "Final Answer:"
+    ).format(question=case["question"], ref_text=ref_text)
     res = 0
     while (True):
         try:

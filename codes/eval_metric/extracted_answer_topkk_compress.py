@@ -31,7 +31,7 @@ ANSWER_PREFIXES = [
 ]
 
 def normalize(text: str) -> str:
-    """lower-case, drop articles, punctuation, and collapse spaces"""
+    """Lower-case, drop articles, punctuation, and collapse spaces."""
     text = text.lower()
     text = re.sub(r"\b(a|an|the)\b", " ", text)
     text = text.translate(str.maketrans("", "", string.punctuation))
@@ -39,35 +39,33 @@ def normalize(text: str) -> str:
 
 def extract_clean_answer(raw: str) -> str:
     """Pull the concise answer out of the model’s response."""
-    # 1) keep only the first non-empty line
+    # 1) Keep only the first non-empty line
     first_line = next((ln for ln in raw.splitlines() if ln.strip()), "")
-    # 2) strip our prefixes (“Reformatted Answer:”, “Answer:”, …)
+    # 2) Strip our prefixes (“Reformatted Answer:”, “Answer:”, …)
     for p in ANSWER_PREFIXES:
         first_line = re.sub(p, "", first_line, flags=re.I)
-    # 3) trim quotes / trailing punctuation like the period after ‘piano.’
+    # 3) Trim quotes / trailing punctuation like the period after ‘piano.’
     first_line = first_line.strip().strip('“”"\'').rstrip(".")
     return first_line
 
 def _run_nli_GPT3turbo(case):
     prompt = f"""Task:
-
-    You are given a question, a golden answer, and a generated answer. Your job is to extract the key information from the generated answer and rewrite it to closely match the golden answer's content and format.
+    You are given a question, a golden answer, and a generated answer.  
+    Extract the minimum text from the generated answer that answers the question
 
     Inputs:
     - Question: {case.get("question", "")}
     - Golden Answer: {case.get("answers", [""])[0]}
     - Generated Answer: {case.get("response", "")}
 
-    Instructions:
-    1. Extract only the information from the generated answer that is essential to answering the question.
-    2. Rewrite the answer to match the golden answer's format and phrasing as closely as possible.
-    3. Ignore extra information that does not help answer the question.
-    4. Return the answer on a single line. Do **not** include full sentences, explanations, or punctuation unless present in the golden answer.
-    5. If no valid answer is found, leave the output blank after the colon.
+    Guidelines:
+    1. Keep only information essential to the question.
+    3. Ignore extra or unrelated details.  
+    4. Output a single line after **Reformatted Answer:** with no surrounding quotes or added punctuation (unless required by the golden answer).  
+    5. If no valid answer is present, leave the line blank after the colon.
 
-    Output:
-    Reformatted Answer: """
-
+    Output:  
+    Reformatted Answer:"""
     while True:
         try:
             text = eval_model(prompt)

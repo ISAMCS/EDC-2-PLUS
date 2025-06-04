@@ -72,30 +72,29 @@ filter_paragraph = ["No content to", "no content to", "I'm sorry", "I am sorry",
 def _run_nli_GPT3(num, docs, question):
     global eval_model
     prompt = f"""
-    **#Instruction#:** You are given a question and {num} documents. Rewrite each document to keep only the information that directly helps answer the question.
+    **#Instruction#:** You are given a question and {num} documents.  
+    Extract (do NOT answer) only the sentences or bullet-points that directly help answer the question.
 
     **#Question#:** "{question}"
 
-    **#Goal#:** Keep only the content relevant to answering the question. Discard all irrelevant or misleading information.
+    **#Goal#:** Keep content that is **objectively relevant and verifiable** for the question; discard everything else.
 
-    **#Important Rules**:
-    - Focus only on entities or facts that meet **all criteria specified in the question** (e.g., group membership, nationality, naming pattern, location, or other attributes).
-    - You MUST:
-    - Only retain information about entities that **satisfy the requirements described in the question**.
-    - Exclude information about entities that **do not meet the criteria**, even if they are commonly associated with the general topic.
-    - Include infromation even if it is not widely known in general knowndlege if it is relevant to the question (e.g., If the prompt mentions a scottish team yet that team it not widely know, still include it.)
-    - If an entity is referenced ambiguously (e.g., by a partial name or pronoun), use surrounding context to determine if it fits the required criteria.
-    - Discard information about all entities or facts that do **not** satisfy the question's constraints.
-    - Retain information even if the reference is implicit, as long as context supports its relevance to the question.
+    **#Extraction Rules**  
+    - Retain facts/entities **only if they satisfy *all* criteria in the question** (e.g., membership, nationality, name pattern, location).  
+    - Discard facts/entities that do **not** meet those criteria, even if topically related.  
+    - If a reference is ambiguous, use surrounding context to decide whether it meets the criteria.  
+    - Implicit references are OK if the context clearly supports them.  
+    - **Do NOT infer, paraphrase, or answer the question.** Copy or lightly trim source wording.  
+    - If *nothing* relevant is found, output exactly: **No content to extract**.
 
     **#Documents#:**
     {docs}
 
-    **#Rewritten Documents#:**
-    1. <to be rewritten>  
-    2. <to be rewritten>  
+    **#Extracted Documents#:**
+    1. <to be extracted>  
+    2. <to be extracted>  
     ...  
-    {num}. <to be rewritten>
+    {num}. <to be extracted>
     """
     while True:
         try:
@@ -105,9 +104,7 @@ def _run_nli_GPT3(num, docs, question):
             print(f"An error occurred: {e}")
 
 def extract_numbered_sections(text):
-    """
-    解析 GPT 生成的文本，按 `1. 2. 3. ...` 的格式提取内容
-    """
+
     sections = {}
     lines = text.split("\n")
     current_index = None
