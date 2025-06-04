@@ -6,9 +6,12 @@ from nltk.tokenize import word_tokenize
 import pandas as pd
 from transformers import AutoModelForCausalLM, AutoTokenizer
 results = []
+
+# python codes/eval_metric/caculate_F1_EM_compress.py 0604 triviaq gpt35_turbo "[20]" "[0]" full
+
 date = sys.argv[1]
 dataset = sys.argv[2]
-eval_method = sys.argv[3]
+eval_model = sys.argv[3]
 topkk = ast.literal_eval(sys.argv[4])
 noises = ast.literal_eval(sys.argv[5])
 benchmark = sys.argv[6]
@@ -48,13 +51,13 @@ def compute_metrics(dataset):
     return round(em_score*100,2), round(f1_score*100,2)
 for topk in topkk:
     for noise in noises:
-        input_file = f"{benchmark}/extracted_answer/{date}_{dataset}_compress_{eval_method}_noise{noise}_topk{topk}.json"
+        input_file = f"{dataset}/extracted_answer/{date}_{dataset}_compress_{eval_model}_noise{noise}_topk{topk}.json"
         with open(input_file, "r", encoding="utf-8") as f:
             datasets = json.load(f)
         em_score, f1_score = compute_metrics(datasets)
         results.append([topk, noise, em_score, f1_score])
         print(f"{input_file}: EM: {em_score}, F1: {f1_score}")
 df = pd.DataFrame(results, columns=["TopK", "Noise", "EM Score", "F1 Score"]).T
-output_file = f"triviaq/tables/{date}_{dataset}_compress_{eval_method}_noise{noises}_topk{topkk}.xlsx"
+output_file = f"triviaq/tables/{date}_{dataset}_compress_{eval_model}_noise{noises}_topk{topkk}.xlsx"
 df.to_excel(output_file, index=False)
 print(f"Results saved to {output_file}")

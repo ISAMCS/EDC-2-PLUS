@@ -9,6 +9,8 @@ path = "sentence-transformers/all-MiniLM-L6-v2"
 tokenizer = AutoTokenizer.from_pretrained(path)
 model = AutoModel.from_pretrained(path, torch_dtype=torch.float16).to(device)
 
+# python codes/datasets/get_embedding.py triviaq
+
 dataset = sys.argv[1]
 
 def get_embedding(text):

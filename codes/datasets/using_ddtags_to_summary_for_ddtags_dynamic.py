@@ -25,10 +25,12 @@ if eval_model == "llama4_request":
     assess_model = llama4_maverick_request
 elif eval_model == "Phi":
     assess_model = Microsoft_Phi4_request
-elif eval_model == "mistral7b_instruct_request":
+elif eval_model == "mistral7b_instruct":
     assess_model = mistral7b_instruct_request
-elif eval_model == "gpt35_turbo_0613_request":
+elif eval_model == "gpt35_turbo":
     assess_model = gpt35_turbo_0613_request
+elif eval_model == "local_hf":
+    assess_model = local_hf_request
 
 filter_paragraph = ["No content to", "no content to", "I'm sorry", "I am sorry", "I can not provide", "I can't provide", "Could you clarify", "Sorry, I", "Could you clarify", "?"]
 

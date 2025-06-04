@@ -83,8 +83,6 @@ def Microsoft_Phi4_request(prompt, temperature=0.0):
 
 # Hugging Face API requests for various models
 
-    # Local Hugging Face Models
-
 _local_model = None
 _local_tokenizer = None
 

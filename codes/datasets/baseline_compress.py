@@ -14,7 +14,11 @@ import re
 import string
 import ast
 from copy import deepcopy
+'''
 
+eval_model, date, dataset, topkk ,noises, benchmark])
+
+'''
 
 eval_model = sys.argv[1] 
 date = sys.argv[2]
@@ -22,78 +26,46 @@ dataset = sys.argv[3]
 topkk = ast.literal_eval(sys.argv[4])
 noises = ast.literal_eval(sys.argv[5])
 benchmark = sys.argv[6]
-if eval_model == "llama4_request":
+
+if eval_model == "llama4":
     assess_model = llama4_maverick_request
 elif eval_model == "Phi":
     assess_model = Microsoft_Phi4_request
-elif eval_model == "mistral7b_instruct_request":
+elif eval_model == "mistral7b_instruct":
     assess_model = mistral7b_instruct_request
-elif eval_model == "gpt35_turbo_0613_request":
+elif eval_model == "gpt35_turbo":
     assess_model = gpt35_turbo_0613_request
-elif eval_model == "local_hf_request":
+elif eval_model == "local_hf":
     assess_model = local_hf_request
-
-def normalize_text(text):
-    """Lowercase, remove punctuation, articles and extra whitespace."""
-    def remove_articles(s):
-        return re.sub(r'\b(a|an|the)\b', ' ', s)
-    def white_space_fix(s):
-        return ' '.join(s.split())
-    def remove_punc(s):
-        return ''.join(ch for ch in s if ch not in set(string.punctuation))
-    def lower(s):
-        return s.lower()
-    return white_space_fix(remove_articles(remove_punc(lower(text))))
-
-def extract_best_answer(passages, gold_answers):
-    # Normalize gold answers
-    norm_gold = [normalize_text(ans) for ans in gold_answers]
-    best_f1 = 0
-    best_ans = ""
-    for passage in passages:
-        text = passage["text"]
-        # Try to find any gold answer alias in the passage
-        for gold, norm_gold_ans in zip(gold_answers, norm_gold):
-            if normalize_text(gold) in normalize_text(text):
-                # Direct match, return the gold alias as answer
-                return gold
-        # Otherwise, try to extract the most overlapping span
-        for gold, norm_gold_ans in zip(gold_answers, norm_gold):
-            passage_norm = normalize_text(text)
-            overlap = set(passage_norm.split()) & set(norm_gold_ans.split())
-            if len(overlap) > best_f1:
-                best_f1 = len(overlap)
-                best_ans = gold
-    # Fallback: return the most common gold alias if nothing matches
-    return best_ans if best_ans else gold_answers[0]
 
 filter_paragraph = ["No content to", "no content to", "I'm sorry", "I am sorry", "I can not provide", "I can't provide", "Could you clarify", "Sorry, I", "Could you clarify", "?"]
 
 def _run_nli_GPT3(num, docs, question):
     global eval_model
     prompt = f"""
-    **#Instruction#:** You are given a question and {num} documents.  
-    Extract (do NOT answer) only the sentences or bullet-points that directly help answer the question.
+    # Instruction:
+    You are given a question and {num} documents.
+    Extract (do NOT answer) only the sentences or bullet points that directly and explicitly help answer the question.
 
-    **#Question#:** "{question}"
+    # Question:
+    "{question}"
 
-    **#Goal#:** Keep content that is **objectively relevant and verifiable** for the question; discard everything else.
+    # Goal:
+    Keep only content that can be used as direct evidence to answer the question. Focus on extracting facts, entities, or statements that match the question's requirements.
 
-    **#Extraction Rules**  
-    - Retain facts/entities **only if they satisfy *all* criteria in the question** (e.g., membership, nationality, name pattern, location).  
-    - Discard facts/entities that do **not** meet those criteria, even if topically related.  
-    - If a reference is ambiguous, use surrounding context to decide whether it meets the criteria.  
-    - Implicit references are OK if the context clearly supports them.  
-    - **Do NOT infer, paraphrase, or answer the question.** Copy or lightly trim source wording.  
-    - If *nothing* relevant is found, output exactly: **No content to extract**.
+    # Extraction Rules:
+    - Retain only facts or entities that are directly relevant to the question's criteria (such as membership, nationality, name pattern, location, date, or number).
+    - If a reference is ambiguous, use the surrounding context to decide if it meets the criteria.
+    - Implicit references are acceptable only if the context clearly supports them.
+    - Exclude sentences that are off-topic, speculative, or do not provide direct evidence for the answer.
 
-    **#Documents#:**
+    # Documents:
     {docs}
 
-    **#Extracted Documents#:**
-    1. <to be extracted>  
-    2. <to be extracted>  
-    ...  
+    # Extracted Documents:
+    1. <to be extracted>
+    2. <to be extracted>
+    ...
     {num}. <to be extracted>
     """
     while True:
@@ -157,17 +129,9 @@ def process_slice(slice_cases):
 
 def run(topk, noise):
     global eval_model, date, dataset, benchmark
-    eval_method = {
-        "llama4_request": "llama4",
-        "Phi_request": "Phi",
-        "ChatGPT_request": "3.5turbo",
-        "mistral7b_instruct_request": "mistral7b",
-        "gpt35_turbo_0613_request": "3.5turbo",
-        "local_hf_request": "local"
-    }.get(eval_model, eval_model)
     
-    res_file = f"{benchmark}/datasets/case_{date}_{dataset}_summary_baseline_compress_{eval_method}_noise{noise}_topk{topk}.json"
-    case_file = f"{benchmark}/datasets/{benchmark}_results_random_{dataset}_w_negative_passages_noise{noise}_topk{topk}_embedding.json"
+    res_file = f"{dataset}/datasets/case_{date}_{dataset}_summary_baseline_compress_{eval_model}_noise{noise}_topk{topk}.json"
+    case_file = f"{dataset}/datasets/{dataset}_results_random_{benchmark}_w_negative_passages_noise{noise}_topk{topk}_embedding.json"
     with open(case_file, "r", encoding="utf-8") as lines:
         cases = json.load(lines)
         num_slices = 20

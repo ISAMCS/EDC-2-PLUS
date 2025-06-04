@@ -3,10 +3,11 @@ import json
 import sys
 
 DATASET = sys.argv[1]
+SIZE = sys.argv[2]
 
 def main():
     # Set how many questions you want to keep
-    X = 10  # Change this value as needed
+    X = SIZE  # Change this value as needed
 
     # Locate repo root (two levels up)
     script_dir = os.path.dirname(__file__)
@@ -21,7 +22,7 @@ def main():
     examples = []
     count = 0
     for entry in data:
-        if count >= X:
+        if count >= int(X):
             break
         answers = entry.get("answers", [])
         answers = list({a.strip() for a in answers if a and a.strip()})
