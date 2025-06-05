@@ -33,24 +33,22 @@ elif eval_model == "local_hf":
 
 def _run_nli_GPT3turbo(case):
     prompt = f"""Task Description:
+    You need to extract the essential information from a generated answer and reformat it to match the structure of the golden answer. We will provide a question, a golden nnswer, and a generated answer. Carefully compare the generated answer with the golden answer, and extract key information from the generated answer to make it as close as possible to the golden answer in format. This will facilitate subsequent evaluation using Exact Match (EM) and F1 metrics.
 
-    You are given a question, a golden answer, and a generated answer.  
-    Extract the minimum text from the generated answer that answers the question
+    Input:
 
-    Guidelines:
-    1. Keep only information essential to the question.
-    3. Ignore extra or unrelated details.  
-    4. If no valid answer is present, return "No valid answer found."
-    5. Reformat the generated answer to closely match the style and structure of the golden answer.
-
-    Inputs:
     Question: {case["question"]}
     Golden Answer: {case["answers"][0]}
     Generated Answer: {case["response"]}
+    Requirements:
 
+    Extract information from the generated answer that corresponds to the essential content of the golden answer.
+    Reorganize the extracted content to align with the structure of the golden answer, including phrasing and order of information where relevant.
+    If the generated answer contains information not covered in the golden answer, include only information crucial to answering the question. Disregard redundant or irrelevant details.
     Output Format:
-    <your concise, reformatted answer here>
-    """
+    Provide a reformatted answer, aligned as closely as possible with the golden answer:
+
+    Reformatted Answer: """
     while True:
         try:
             text = assess_model(prompt)

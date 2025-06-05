@@ -46,6 +46,7 @@ def _run_nli_GPT3turbo(case):
         "• Prefer conservative answers, but avoid returning 'Unknown' if a reasonable, well-supported inference can be made from the text.\n"
         "• If the question requires counting or listing (e.g., \"How many teams end in United?\"), list the entities that meet all criteria in the question, then provide the count or list as the answer.\n"
         "• Reason internally, but output only the final answer after the tag 'Final Answer:', on a single line.\n"
+        "• If the question requires counting or listing, identify and count all matching entities-even if the answer is not directly stated.\n"
         "• If the answer truly cannot be determined from the reference text, write 'Unknown' after Final Answer:.\n\n"
         "## Question ##\n{question}\n\n"
         "## Reference Text ##\n{ref_text}\n\n"

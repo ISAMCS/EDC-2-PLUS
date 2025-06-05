@@ -45,19 +45,25 @@ def _run_nli_GPT3(num, docs, question):
     prompt = f"""
     # Instruction:
     You are given a question and {num} documents.
-    Extract (do NOT answer) only the sentences or bullet points that directly and explicitly help answer the question.
+    Extract (do NOT answer) only the sentences or bullet points that help answer the question.
 
     # Question:
     "{question}"
 
+    #Question Instructions:
+    1. Carefully identify exactly what the question is asking, including all constraints (such as entity type, date, location, number, or other attributes).
+    2. Determine the type of answer the question is looking for (numeric, entity, date, etc.)
+    3. Determine how certain ambigious answers may be important to the question (e.g if it is asking "How many" then pay attention to the entity that is is asking for and key words for that)
+
     # Goal:
-    Keep only content that can be used as direct evidence to answer the question. Focus on extracting facts, entities, or statements that match the question's requirements.
+    Keep only content that can be used to answer the question. Focus on extracting facts, entities, key words or statements that match the question's requirements.
 
     # Extraction Rules:
-    - Retain only facts or entities that are directly relevant to the question's criteria (such as membership, nationality, name pattern, location, date, or number).
+    - Anlyze the question and identify the key criteria it specifies.
+    - Retain only facts or entities that are relevant to the question's criteria (such as membership, nationality, name pattern, location, date, or number).
     - If a reference is ambiguous, use the surrounding context to decide if it meets the criteria.
-    - Implicit references are acceptable only if the context clearly supports them.
-    - Exclude sentences that are off-topic, speculative, or do not provide direct evidence for the answer.
+    - Implicit references are acceptable only if the context supports them.
+    - Exclude sentences that are off-topic, speculative, or do not provide much relevance for the answer.
 
     # Documents:
     {docs}

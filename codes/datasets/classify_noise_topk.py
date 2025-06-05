@@ -57,15 +57,21 @@ def get_llm_ranked_indices(question, passages, k):
 
     Instructions:
     1. Carefully identify exactly what the question is asking, including all constraints (such as entity type, date, location, number, or other attributes).
-    2. Rank passages that fully and explicitly satisfy **all** of the question's constraints the highest.
-    3. Prefer passages that state clear, specific, and verifiable facts, named entities, numbers, or dates that directly answer the question.
-    4. If a passage uses ambiguous terms (such as pronouns or abbreviations), use the passage's title or context to resolve ambiguity.
-    5. Deprioritize passages that:
-    - Do not address the question directly, even if they are topically related.
+    2. Determine the type of answer the question is looking for (numeric, entity, date, etc.)
+    3. Determine how certain ambigious answers may be important to the question (e.g if it is asking "How many" then pay attention to the entity that is is asking for and key words for that)
+    4. Rank the passages based on how well they answer the question, considering the following:
+    - Relevance to the question entity or topic, even if not explicitly stated.
+    - Contain key words or phrases that match the question.
+    - Provide specific, verifiable information that can be directly linked to the question.
+    - Avoid passages that are too general, off-topic, or contain irrelevant information.
+    5. Some things to consider:
+        Pay attention to all forms of evidence such as: Tables, figures, lists, text, captions, etc. 
+        Prefer passages that state clear keywords, names entities, numbers, or dates that can be relevant to the question
+    6. If a passage uses ambiguous terms (such as pronouns or abbreviations), use the passage's title or context to resolve ambiguity.
+    7. Deprioritize passages that:
+    - Are not relevant to the question's restriants in general, even if they are topically related.
     - Mention popular but irrelevant entities.
-    - Contain only opinions, commentary, or speculation without factual value.
-    6. If no passage fully satisfies the question, choose those that best match the most important constraints.
-    7. Do not add commentary or explanations. Only output the indices of the passages in order of relevance.
+    8. Do not add commentary or explanations. Only output the indices of the passages in order of relevance.
 
     Answer format: [index1, index2, ..., index{k}]
 

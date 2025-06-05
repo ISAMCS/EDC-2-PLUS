@@ -59,7 +59,7 @@ print("start_to_summarize")
 
 '''
 
-# codes/datasets/baseline_compress.py gpt35_turbo_0613 0602 triviaq "[20]" "[0]" full
+# pythoncodes/datasets/baseline_compress.py gpt35_turbo_0613 0602 triviaq "[20]" "[0]" full
 
 eval_model = sys.argv[1] 
 date = sys.argv[2]
