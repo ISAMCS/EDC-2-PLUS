@@ -14,7 +14,7 @@ benchmark = sys.argv[6] # full
 
 # Create a question split for the dataset
 
-python codes/eval_scripts/make_dev_split.py triviaq 100 -> insert number of questions to split
+python codes/eval_scripts/make_dev_split.py triviaq 15-> insert number of questions to split
 
 # Start virtual environment (if on Mac) and install requirements
 
@@ -26,10 +26,10 @@ export PYTHONPATH=.
 
 eval_model=gpt35_turbo
 date=0603
-dataset=full
+dataset=triviaq
 topkk="[20]"
 noises="[0]"
-benchmark=triviaq
+benchmark=full
 eval_method=3.5turbo
 
 # Possible eval_model values:
@@ -76,7 +76,7 @@ print("end_summarize")
 print("start_to_eval")
 
 '''
-# python codes/datasets/baseline_compress.py gpt35_turbo 0602 triviaq "[20]" "[0]" full
+# python codes/run_methods/eval_baseline_compress.py gpt_turbo 0604 triviaq "[20]" "[0]" full
 
 eval_model = sys.argv[1] 
 date = sys.argv[2]
@@ -94,7 +94,7 @@ print("end_eval")
 print("start_to_extract_answer")
 
 '''
-python codes/eval_metric/extracted_answer_topkk_compress.py 0604 triviaq gpt35_turbo "[20]" "[0]" full gpt35_turbo
+python codes/eval_metric/extracted_answer_topkk_compress.py 0604 triviaq gpt35_turbo "[20]" "[0]" full
 python codes/eval_metric/caculate_F1_EM_compress.py 0604 triviaq gpt35_turbo "[20]" "[0]" full
 
 date = sys.argv[1]

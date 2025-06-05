@@ -13,6 +13,8 @@ from codes.datasets.utils import llama4_maverick_request, Microsoft_Phi4_request
 import re
 import string
 import ast
+import numpy as np
+np.random.seed(42)
 from copy import deepcopy
 '''
 
@@ -45,25 +47,21 @@ def _run_nli_GPT3(num, docs, question):
     prompt = f"""
     # Instruction:
     You are given a question and {num} documents.
-    Extract (do NOT answer) only the sentences or bullet points that help answer the question.
+    Extract (do NOT answer) only the sentences or bullet points that provide direct evidence for the most canonical, standard, or widely accepted answer to the question.
 
     # Question:
     "{question}"
 
-    #Question Instructions:
+    # Extraction Instructions:
     1. Carefully identify exactly what the question is asking, including all constraints (such as entity type, date, location, number, or other attributes).
-    2. Determine the type of answer the question is looking for (numeric, entity, date, etc.)
-    3. Determine how certain ambigious answers may be important to the question (e.g if it is asking "How many" then pay attention to the entity that is is asking for and key words for that)
-
-    # Goal:
-    Keep only content that can be used to answer the question. Focus on extracting facts, entities, key words or statements that match the question's requirements.
-
-    # Extraction Rules:
-    - Anlyze the question and identify the key criteria it specifies.
-    - Retain only facts or entities that are relevant to the question's criteria (such as membership, nationality, name pattern, location, date, or number).
-    - If a reference is ambiguous, use the surrounding context to decide if it meets the criteria.
-    - Implicit references are acceptable only if the context supports them.
-    - Exclude sentences that are off-topic, speculative, or do not provide much relevance for the answer.
+    2. Determine what would be considered the most canonical or standard answer in a reputable reference source.
+    3. Extract only the sentences or bullet points that directly support or provide evidence for this canonical answer.
+    4. Prefer facts, entities, or statements that use standard names, codes, or formats (e.g., ISO codes, official names, standard spellings) when relevant.
+    5. If a reference is ambiguous, use the surrounding context to decide if it meets the canonical criteria.
+    6. Implicit references are acceptable only if the context clearly supports them.
+    7. Exclude sentences that are off-topic, speculative, or do not provide direct evidence for the canonical answer.
+    8. Do NOT include commentary, explanations, or any content that does not directly support the canonical answer.
+    9. Extract evidence in a way that maximizes overlap with the canonical answer in relation to the question (the most accurate answer is most important)
 
     # Documents:
     {docs}

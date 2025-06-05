@@ -12,7 +12,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 from codes.text_utils import llama4_maverick_request, Microsoft_Phi4_request, mistral7b_instruct_request, gpt35_turbo_0613_request, local_hf_request 
 
 
-# python codes/run_methods/eval_baseline_compress.py gpt_turbo 0604 triviaq "[20]" "[0]" full
+# python codes/run_methods/eval_baseline_compress.py gpt35_turbo 0604 triviaq "[20]" "[0]" full
 
 eval_model = sys.argv[1] 
 date = sys.argv[2]
@@ -40,14 +40,21 @@ def _run_nli_GPT3turbo(case):
     topk = int(topk)
     ref_text = "\n".join([f"{i+1}.{case['summary_docs_baseline'][i]}" for i in range(topk)])
     prompt = (
-        "## Instruction ##\n"
-        "Base your answer strictly on the reference text below.\n"
-        "• Use context (such as league names, match locations, or other clues) to determine which entities are relevant.\n"
-        "• Prefer conservative answers, but avoid returning 'Unknown' if a reasonable, well-supported inference can be made from the text.\n"
-        "• If the question requires counting or listing (e.g., \"How many teams end in United?\"), list the entities that meet all criteria in the question, then provide the count or list as the answer.\n"
-        "• Reason internally, but output only the final answer after the tag 'Final Answer:', on a single line.\n"
-        "• If the question requires counting or listing, identify and count all matching entities-even if the answer is not directly stated.\n"
-        "• If the answer truly cannot be determined from the reference text, write 'Unknown' after Final Answer:.\n\n"
+        "## Task ##\n"
+        "You are an expert question-answering assistant. Your job is to extract and provide the most canonical, standard, or widely accepted answer to the question, using ONLY the information provided in the reference text below.\n"
+        "\n"
+        "## Instructions ##\n"
+        "• Carefully read the question and identify all requirements (entities, numbers, dates, etc).\n"
+        "• Determine what would be considered the most canonical or standard answer in a reputable reference source.\n"
+        "• Use all relevant evidence from the reference text to extract and provide this canonical answer. Combine information from multiple sentences if needed.\n"
+        "• Prefer facts, entities, or statements that use standard names, codes, or formats (e.g., ISO codes, official names, standard spellings) when relevant.\n"
+        "• Match the style and level of detail of a high-quality ground truth answer.\n"
+        "• If the question requires counting or listing (e.g., \"How many teams end in United?\"), list the entities that meet ALL criteria, then provide the count or list as the answer.\n"
+        "• If the answer is a name, number, date, or list, provide it directly and concisely.\n"
+        "• If the answer cannot be determined from the reference text, write 'Unknown' after Final Answer:.\n"
+        "• Do NOT use any outside knowledge. Only use the reference text.\n"
+        "• Output ONLY the most canonical answer after the tag 'Final Answer:', on a single line. Do not include explanations or reasoning in your output.\n"
+        "\n"
         "## Question ##\n{question}\n\n"
         "## Reference Text ##\n{ref_text}\n\n"
         "Final Answer:"
@@ -60,7 +67,6 @@ def _run_nli_GPT3turbo(case):
         except Exception as e:
             print(f"An error occurred: {e}")
     return text
-
 
 def process_slice(slice_cases):
     outs = []
