@@ -1,7 +1,7 @@
 import sys
 import subprocess
 
-# python codes/eval_scripts/run_baseline_compress.py gpt35_turbo 0604 triviaq "[20]" "[0]" full
+# python codes/eval_scripts/run_baseline_compress.py gpt35_turbo 0605 triviaq "[20]" "[0]" full
 
 eval_model = sys.argv[1] #llama4_maverick_request
 date = sys.argv[2] # 0602
@@ -14,7 +14,7 @@ benchmark = sys.argv[6] # full
 
 # Create a question split for the dataset
 
-python codes/eval_scripts/make_dev_split.py triviaq 15-> insert number of questions to split
+python codes/eval_scripts/make_dev_split.py triviaq 100 -> insert number of questions to split
 
 # Start virtual environment (if on Mac) and install requirements
 

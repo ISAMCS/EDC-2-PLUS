@@ -62,24 +62,22 @@ def get_llm_ranked_indices(question, passages, k):
         return []
     passage_list = "\n".join([f"[{i}] {p['text']}" for i, p in enumerate(passages)])
     prompt = f"""
-    # Reformatted prompt for LLM passage ranking using embedding scores
+You are given a question and a list of passages, each already pre-ranked by embedding similarity to the question. Your task is to further rank these passages by how directly and verifiably they support the most canonical answer.
 
-    You are given a question and a list of passages, each already pre-ranked by embedding similarity to the question. Your task is to further rank these passages by how directly and verifiably they support the most canonical answer.
+Question:
+"{question}"
 
-    Question:
-    "{question}"
+Passages:
+{passage_list}
 
-    Passages:
-    {passage_list}
+Instructions:
+- Focus on passages that most directly and explicitly support the canonical answer.
+- Use embedding similarity as a guide, but prioritize passages that contain exact facts, names, or codes matching the expected answer.
+- Ignore passages that are off-topic or do not provide clear evidence.
+- Output only the indices of the passages in order of relevance.
 
-    Instructions:
-    - Focus on passages that most directly and explicitly support the canonical answer.
-    - Use embedding similarity as a guide, but prioritize passages that contain exact facts, names, or codes matching the expected answer.
-    - Ignore passages that are off-topic or do not provide clear evidence.
-    - Output only the indices of the passages in order of relevance.
-
-    Answer format: [index1, index2, ..., index{k}]
-    """
+Answer format: [index1, index2, ..., index{k}]
+"""
     response = assess_model(prompt)
     try:
         indices = ast.literal_eval(response.strip())
@@ -95,6 +93,14 @@ def get_llm_ranked_indices(question, passages, k):
 with open(input_file, "r", encoding="utf-8") as f:
     cases = json.load(f)
 
+# Optional: Count unique passage IDs for analysis
+unique_ids = set()
+for case in cases:
+    for passage in case.get("positive_passages", []) + case.get("negative_passages", []):
+        if "id" in passage:
+            unique_ids.add(passage["id"])
+print(f"Total unique passage ids: {len(unique_ids)}")
+
 TOP_N_EMBEDDING = 50  # Number of passages to shortlist by embedding before LLM ranking
 
 for topk in topk_list:
@@ -109,6 +115,9 @@ for topk in topk_list:
 
             if len(all_passages) < topk:
                 raise ValueError(f"Not enough passages for case: need {topk}, got {len(all_passages)}")
+
+           # if TOP_N_EMBEDDING > len(all_passages):
+            #    print(f"Warning: TOP_N_EMBEDDING ({TOP_N_EMBEDDING}) > number of passages ({len(all_passages)}). Using {len(all_passages)}.")
 
             # --- Step 1: Embedding-based pre-ranking ---
             q_emb = get_embedding(case["question"])
@@ -137,7 +146,7 @@ for topk in topk_list:
                 np.random.shuffle(remaining_negatives)
                 selected_main += remaining_negatives[:n]
             assert len(selected_main) == topk, f"selected_main has {len(selected_main)} but topk={topk}"
-            
+
             out["passages"] = selected_main
             out.pop("positive_passages", None)
             out.pop("negative_passages", None)
