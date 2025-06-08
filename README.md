@@ -5,7 +5,7 @@
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
-This repository contains the official implementation of **EDC²-RAG**, a plug-and-play document preprocessing framework that enhances Retrieval-Augmented Generation (RAG) by dynamically clustering and compressing retrieved documents. Our method improves the robustness, relevance, and factuality of LLM-based generation systems by leveraging fine-grained inter-document relationships.
+This repository contains the official extension of **EDC²-RAG**, a plug-and-play document preprocessing framework that enhances Retrieval-Augmented Generation (RAG) by dynamically clustering and compressing retrieved documents. Our method improves the robustness, relevance, and factuality of LLM-based generation systems by leveraging fine-grained inter-document relationships.
 
 
 
@@ -18,14 +18,28 @@ Retrieval-Augmented Generation (RAG) enhances LLM outputs by integrating externa
 - ✂️ **Query-aware Compression** using LLMs to eliminate irrelevant or redundant content.
 - 🧠 A more informative and coherent context for generation.
 
+However the RAG system is not widely applicable to open source models or other models besides GPT
+
+**EDC²-RAG NEW** addresses these issues via:
+- 🔗 **Refactoring** of the API hardcode endpoints.
+- ✂️ **Sequential Processing** instead of multithreading to support lower tier models than GPT.
+- 🧠 A more adapative and pluggable design for RAG systems.
+
 ![Overview](pictures/overview.jpg)
 
-## 🚀 Features
+## 🚀 OG Features
 
 - 📚 **Noise & Redundancy Reduction**: Fine-grained document-level structuring.
 - 🧩 **Plug-and-Play**: No fine-tuning required, compatible with any retriever or LLM.
 - ⚡ **Efficient**: Reduces hallucinations while minimizing inference overhead.
 - 🧪 **Extensive Evaluation**: Verified across hallucination detection and QA tasks.
+
+## 🚀 NEW Features
+
+- 📚 **Open Router Models**: Endpoints for Open Router Models.
+- 🧩 **Hugging Face Compatability**: Compatible with Hugging Face models.
+- ⚡ **Local LLM Compatability**: Compatible with local models.
+- 🧪 **Hybrid LLM and Embedding Method**: Altered Classification method.
 
 ## 🧱 Architecture
 
@@ -43,13 +57,21 @@ Retrieval-Augmented Generation (RAG) enhances LLM outputs by integrating externa
 
 ## 📊 Experimental Results
 
-| Dataset        | Metric    | RALM | Raw Compression | EDC²-RAG (Ours) |
+| Dataset        | Metric    | RALM | Raw Compression | EDC²-RAG (OG) |
 |----------------|-----------|------|------------------|------------------|
 | TriviaQA       | F1 Score  | 93.78 | 93.29           | **93.81**        |
 | WebQ           | F1 Score  | 88.75 | 88.25           | **89.23**        |
 | FELM           | Bal. Acc. | 55.65 | -----           | **62.26**        |
 
-See the paper for full ablation studies and robustness testing.
+See the original paper for full ablation studies and robustness testing.
+
+| Query Size     | Metric    | EDC²-RAG (OG) |
+|----------------|-----------|---------------|
+| 25             | F1 Score  | **92.53**     |
+| 50             | F1 Score  | **89.69**     |
+| 100            | F1 Score  | **87.55**     |
+
+Used with TriviaQA, GPT 3.5 Turbo
 
 ## 🧪 Getting Started
 
@@ -59,16 +81,24 @@ See the paper for full ablation studies and robustness testing.
 pip install -r requirements.txt
 ```
 
-### 2. Prepare Data
+### 2. Create a split of original dataset
 
-Download raw datasets of triviaqa and webq.
+```bash
+eval_model = sys.argv[1] #llama4_maverick_request
+date = sys.argv[2] # 0602
+dataset = sys.argv[3] # triviaq
+topkk = sys.argv[4] # "[20, 50, 70]"
+noises = sys.argv[5] # "[20 ,60, 80]"
+benchmark = sys.argv[6] # full
+
+```
 
 ### 3. Evaluate Results
 
 ```bash
-bash run.sh
+python codes/eval_scripts/run_baseline_compress.py "$eval_model" "$date" "$dataset" "$topkk" "$noises" "$benchmark"
 ```
 
-Up to now, we have only released the evaluation code and datasets related to the main experiments on TriviaQA and WebQ. We will later update the code for the ablation studies and hallucination detection datasets. If you need additional datasets or code, please feel free to contact us.
+OG Message: Up to now, we have only released the evaluation code and datasets related to the main experiments on TriviaQA and WebQ. We will later update the code for the ablation studies and hallucination detection datasets. If you need additional datasets or code, please feel free to contact us.
 
 ---
