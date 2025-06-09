@@ -162,7 +162,3 @@ python codes/eval_metric/caculate_F1_EM_compress.py "$date" "$dataset" "$eval_mo
 OG Message: Up to now, we have only released the evaluation code and datasets related to the main experiments on TriviaQA and WebQ. We will later update the code for the ablation studies and hallucination detection datasets. If you need additional datasets or code, please feel free to contact us.
 
 ---
-
-OG Message: Up to now, we have only released the evaluation code and datasets related to the main experiments on TriviaQA and WebQ. We will later update the code for the ablation studies and hallucination detection datasets. If you need additional datasets or code, please feel free to contact us.
-
----
