@@ -10,6 +10,7 @@ __pycache__/
 EDC-2-RAG-NEW.git.bfg-report
 EDC-2-RAG-NEW.git
 EDC-2-RAG-NEW.git/hooks/
+triviaq/Extra
 
 # Virtual environments
 .venv/
@@ -41,7 +42,7 @@ models/
 
 # Results and intermediate files
 *.xlsx
-*.json
+#*.json
 *.csv
 
 # Ignore extracted answers, results, and tables (if not needed)
