@@ -1,1 +1,1 @@
-This is the file for the extracted answers of the pipeline
+This is the folder for the extracted answers of the pipeline

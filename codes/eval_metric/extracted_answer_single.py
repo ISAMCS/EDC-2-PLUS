@@ -18,55 +18,22 @@ benchmark = sys.argv[4]
 
 def _run_nli_GPT3turbo(case):
     prompt = f"""Task Description:
+    You need to extract the essential information from a generated answer and reformat it to match the structure of the golden answer. We will provide a question, a golden nnswer, and a generated answer. Carefully compare the generated answer with the golden answer, and extract key information from the generated answer to make it as close as possible to the golden answer in format. This will facilitate subsequent evaluation using Exact Match (EM) and F1 metrics.
 
-    You are given a question, a golden answer, and a generated answer.  
-
-    Inputs:
-
-    Question: {case["question"]}
-    Golden Answer: {case["answers"][0]}
-    Generated Answer: {case["response"]}
-
-    Instructions:
-
-    1. Carefully identify exactly what the question is asking, including all constraints (such as entity type, date, location, number, or other attributes).
-    2. Determine the type of answer the question is looking for (numeric, entity, date, etc.)
-    3. Determine how certain ambigious answers may be important to the question (e.g if it is asking "How many" then pay attention to the entity that is is asking for and key words for that)
-    4. Extract the essential information from the {case["response"]}
-    5. View the main concept, idea, concept, and structure of the golden answer
-    6. Compare the main concept, idea, concept, and structure of the generated answer with the golden answer
-    7. Reformat it to match the structure of the golden answer only if it is present in the {case["response"]}
-    8. Carefully compare the generated answer with the golden answer, and extract key information from the generated answer 
-    9. Generate an output that you extracted from the generated answer that closely matches the style and structure of the golden answer
-    
-    Guidelines:
-    1. Keep only information essential to the question.
-    3. Ignore extra or unrelated details.  
-    4. If no valid answer is present, return "No valid answer found."
-    5. If the generated answers does not contain any information or does not contain relevant information return "None"
-    6. Only extract the information out of the generatted answer, use other information as a guide for the format but not for the content
-
-    Output Format:
-    <your concise, reformatted answer here>
-    """
+    Input:
 
     Question: {case["question"]}
     Golden Answer: {case["answers"][0]}
     Generated Answer: {case["response"]}
-    
     Requirements:
-
-    1. Carefully identify exactly what the question is asking, including all constraints (such as entity type, date, location, number, or other attributes).
-    2. Determine the type of answer the question is looking for (numeric, entity, date, etc.)
-    3. Determine how certain ambigious answers may be important to the question (e.g if it is asking "How many" then pay attention to the entity that is is asking for and key words for that)
 
     Extract information from the generated answer that corresponds to the essential content of the golden answer.
     Reorganize the extracted content to align with the structure of the golden answer, including phrasing and order of information where relevant.
     If the generated answer contains information not covered in the golden answer, include only information crucial to answering the question. Disregard redundant or irrelevant details.
-
     Output Format:
+    Provide a reformatted answer, aligned as closely as possible with the golden answer:
 
-    Reformatted Answer:"""
+    Reformatted Answer: """
     res = 0
     while (True):
         try:

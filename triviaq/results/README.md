@@ -1,1 +1,1 @@
-This is the file for the results of the pipeline
+This is the folder for the results of the pipeline

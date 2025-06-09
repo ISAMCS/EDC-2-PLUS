@@ -15,6 +15,7 @@ eval_model = sys.argv[3]
 topkk = ast.literal_eval(sys.argv[4])
 noises = ast.literal_eval(sys.argv[5])
 benchmark = sys.argv[6]
+
 def normalize_text(text):
     text = text.lower()
     return ' '.join(text.split())
