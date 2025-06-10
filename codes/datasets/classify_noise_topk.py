@@ -8,6 +8,7 @@ from tqdm import tqdm
 import random
 
 # Set seeds for reproducibility
+
 random.seed(42)
 torch.manual_seed(42)
 if torch.cuda.is_available():
@@ -70,22 +71,22 @@ def get_llm_ranked_indices(question, passages, k):
     Passages:
     {passage_list}
 
-    1. Carefully identify exactly what the question is asking, including all constraints (such as entity type, date, location, number, or other attributes).Add commentMore actions
-        2. Determine the type of answer the question is looking for (numeric, entity, date, etc.)
-        3. Determine how certain ambigious answers may be important to the question (e.g if it is asking "How many" then pay attention to the entity that is is asking for and key words for that)
-        4. Rank the passages based on how well they answer the question, considering the following:
-        - Relevance to the question entity or topic, even if not explicitly stated.
-        - Contain key words or phrases that match the question.
-        - Provide specific, verifiable information that can be directly linked to the question.
-        - Avoid passages that are too general, off-topic, or contain irrelevant information.
-        5. Some things to consider:
-            Pay attention to all forms of evidence such as: Tables, figures, lists, text, captions, etc. 
-            Prefer passages that state clear keywords, names entities, numbers, or dates that can be relevant to the question
-        6. If a passage uses ambiguous terms (such as pronouns or abbreviations), use the passage's title or context to resolve ambiguity.
-        7. Deprioritize passages that:
-        - Are not relevant to the question's restriants in general, even if they are topically related.
-        - Mention popular but irrelevant entities.
-        8. Do not add commentary or explanations. Only output the indices of the passages in order of relevance.
+    1. Carefully identify exactly what the question is asking, including all constraints (such as entity type, date, location, number, or other attributes).
+    2. Determine the type of answer the question is looking for (numeric, entity, date, etc.)
+    3. Determine how certain ambigious answers may be important to the question (e.g if it is asking "How many" then pay attention to the entity that is is asking for and key words for that)
+    4. Rank the passages based on how well they answer the question, considering the following:
+    - Relevance to the question entity or topic, even if not explicitly stated.
+    - Contain key words or phrases that match the question.
+    - Provide specific, verifiable information that can be directly linked to the question.
+    - Avoid passages that are too general, off-topic, or contain irrelevant information.
+    5. Some things to consider:
+        Pay attention to all forms of evidence such as: Tables, figures, lists, text, captions, etc. 
+        Prefer passages that state clear keywords, names entities, numbers, or dates that can be relevant to the question
+    6. If a passage uses ambiguous terms (such as pronouns or abbreviations), use the passage's title or context to resolve ambiguity.
+    7. Deprioritize passages that:
+    - Are not relevant to the question's restriants in general, even if they are topically related.
+    - Mention popular but irrelevant entities.
+    8. Do not add commentary or explanations. Only output the indices of the passages in order of relevance.
     Answer format: [index1, index2, ..., index{k}]
     """
     response = assess_model(prompt)
