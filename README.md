@@ -121,13 +121,13 @@ benchmark=full
 You use your variables with each input them in each field then copy that into the terminal
 
 
-### Option 3.1 Evaluate Results
+### Option 4.1 Evaluate Results
 
 ```bash
 python codes/eval_scripts/run_baseline_compress.py "$eval_model" "$date" "$dataset" "$topkk" "$noises" "$benchmark"
 ```
 
-### Option 3.2 Run the pipeline individually
+### Option 4.2 Run the pipeline individually
 
 Make the dataset
 
