@@ -1,6 +1,4 @@
-# Important !!! Improved Testing Results !!! Please read this ReadME !!! To run my testing dataset view the bottom of the README.md !!!! #
-
-# EDC²-RAG: Efficient Dynamic Clustering-Based Document Compression for Retrieval-Augmented-Generation
+# EDC²-RAG NEW: Efficient Dynamic Clustering-Based Document Compression for Retrieval-Augmented-Generation
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
