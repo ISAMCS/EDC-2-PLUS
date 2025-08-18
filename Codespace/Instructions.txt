@@ -1,0 +1,103 @@
+Welcome to EDC2+
+
+This an extension of EDC^2 RAG Version 2
+
+Version one removed the hard coded Open AI depedencies to make it
+open source compatible and more modular
+
+Version two compares EDC2 and EDC2+ with new features including:
+
+    1. Retrieval “sanity checks” with negation & counterfactual probes 
+    (via the query-stability guard that perturbs questions and checks retrieval robustness)
+
+    2.Time-aware retrieval policy (via the temporal router that classifies queries as time-sensitive or static)
+
+    3. Conflict-aware aggregation (via conflict detection that flags numeric/polarity disagreements across clusters) 
+
+    4. RAG that knows when it’s wrong (calibrated output) 
+    (via confidence calibration combining self-consistency and citation coverage)
+
+    5. End-to-end evaluation that matches reality
+    (via stratified SQuAD-style EM/F1 and diagnostic reporting in the evaluation scripts)
+
+Differences:
+
+EDC2 (Original)
+
+Pipeline: Retrieve → Cluster → Compress → Answer.
+Retrieval: Standard document retrieval, usually top-k.
+Clustering: Groups similar passages, but with basic logic.
+Compression: Summarizes clusters, but may lack explicit citations.
+Answer Generation: Uses compressed clusters to generate answers.
+No advanced diagnostics or adaptive control.
+
+EDC2plus
+
+Pipeline: Retains the core steps, but adds advanced modules and diagnostics.
+Temporal Router: Classifies queries as time-sensitive or static, enabling time-aware retrieval.
+Query Stability Guard: Perturbs queries (negation/counterfactuals) and measures retrieval stability.
+Reranking: Uses embedding-based cosine similarity to rerank passages for relevance.
+Agglomerative Clustering: More robust clustering based on embedding similarity.
+Compression: Uses LLMs to produce short, sourced bullets with explicit citations for each cluster.
+Diagnostics: Tracks query stability, temporal class, and can be extended for conflict detection and calibration.
+Modularity: Each step is a separate, callable module, making the pipeline transparent and extensible.
+Evaluation: Supports stratified, SQuAD-style EM/F1 evaluation with diagnostic reporting.
+
+EDC2plus is more adaptive, robust, and diagnostic, directly addressing 
+weaknesses in standard RAG and EDC2 pipelines.
+
+First (if you're on mac), start a python environment - Insert this into the terminal
+
+python3.11 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+
+Here is the variable setup:
+
+eval_model = sys.argv[1] #llama4_maverick_request
+date = sys.argv[2] # 0602
+dataset = sys.argv[3] # triviaq
+topkk = sys.argv[4] # "[20, 50, 70]"
+noises = sys.argv[5] # "[20 ,60, 80]"
+benchmark = sys.argv[6] # full
+
+Example of variables to set:
+
+eval_model=gpt35_turbo
+date=0608
+dataset=triviaq
+topkk="[20]"
+noises="[0]"
+benchmark=full
+
+Now the dataset is too big so I create a function to split the size of the json
+
+# Step 2: Create dev split for the dataset
+
+python Codespace/Dataset_Preparation/make_dev_split.py triviaq 25 -> insert number of questions to split
+
+# Step 3: Prepare the Dataset
+
+python Codespace/Dataset_Preparation/classify_noise_topk.py triviaq "[20]" "[0]" gpt35_turbo
+
+# Step 4: Run the EDC2 Pipeline
+
+See Codespace/Scripts/EDC2/run_edc2_compress.py
+
+# Step 5: Run the EDC2+ Pipeline
+
+See Codespace/Scripts/EDC2+/run_edc2plus_compress.py
+
+# Step 6: Analyze EDC2 Failures
+
+python Codespace/Analysis/check_extracted_f1.py triviaq/extracted_answer/0608_triviaq_compress_gpt35_turbo_noise0_topk20.json
+
+# Step 7: Analyze EDC2+ Failures
+
+python Codespace/Analysis/check_extracted_f1.py triviaq/extracted_answer/0608_triviaq_edc2plus_compress_gpt35_turbo_noise0_topk20.json
+
+# Step 8: Analyze the two scores
+
+python Codespace/Analysis/compare_both.py
+
+

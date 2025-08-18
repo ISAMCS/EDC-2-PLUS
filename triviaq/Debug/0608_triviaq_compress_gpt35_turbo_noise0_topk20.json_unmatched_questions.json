@@ -1,0 +1,152 @@
+[
+  {
+    "source": "triviaq/extracted_answer/0608_triviaq_compress_gpt35_turbo_noise0_topk20.json",
+    "index": 5,
+    "question": "The principal author of the US Constitution and writer of over 1/3 of the Federalist Papers, which US President, the 4th, was CIC during the War of 1812?",
+    "extracted_answer": "James Madison, the fourth President of the United States.",
+    "answers": [
+      "Fourth President of the United States",
+      "4th President of the United States",
+      "James Madison, Jun.",
+      "President James Madison",
+      "James Madison",
+      "Madison Administration",
+      "President Madison",
+      "Madison, James",
+      "Jimmy Madison",
+      "James Madison, Jr.",
+      "James madison",
+      "Presidency of James Madison",
+      "Father of the Constitution",
+      "Nelly Conway Madison"
+    ]
+  },
+  {
+    "source": "triviaq/extracted_answer/0608_triviaq_compress_gpt35_turbo_noise0_topk20.json",
+    "index": 8,
+    "question": "How many scottish football league teams names end in United?",
+    "extracted_answer": "Unknown",
+    "answers": [
+      "3",
+      "three"
+    ]
+  },
+  {
+    "source": "triviaq/extracted_answer/0608_triviaq_compress_gpt35_turbo_noise0_topk20.json",
+    "index": 12,
+    "question": "Operation Barbarossa, Hitler invades Russia.",
+    "extracted_answer": "Operation Barbarossa occurred in 1941, marking the German invasion of the Soviet Union and the beginning of the Eastern Front in World War II.",
+    "answers": [
+      "one thousand, nine hundred and forty-one",
+      "1941"
+    ]
+  },
+  {
+    "source": "triviaq/extracted_answer/0608_triviaq_compress_gpt35_turbo_noise0_topk20.json",
+    "index": 13,
+    "question": "In what Beijing square were democracy activists massacred in 1989?",
+    "extracted_answer": "Tiananmen Square",
+    "answers": [
+      "Tian'an men",
+      "Tian An Men",
+      "Abkai elhe obure duka",
+      "Tiananmen",
+      "Chengtianmen",
+      "Tiannanmen",
+      "Tiennamen",
+      "Tienaman",
+      "Tiananmen Gate",
+      "Tianenmen",
+      "Tian'anmen",
+      "天安门",
+      "Tienanmen",
+      "Tian'an Gate",
+      "Tiananman",
+      "Tian An Men Gate",
+      "Tiān'ānmén",
+      "天安門",
+      "Gate of Heavenly Peace",
+      "Tien an men",
+      "Tiananmen gate",
+      "Tian an men",
+      "Tianan Gate"
+    ]
+  },
+  {
+    "source": "triviaq/extracted_answer/0608_triviaq_compress_gpt35_turbo_noise0_topk20.json",
+    "index": 15,
+    "question": "Who holds the record for the fastest 100m dash time ever?",
+    "extracted_answer": "Unknown",
+    "answers": [
+      "Ussain Bolt",
+      "Usain bolt",
+      "Ussein bolt",
+      "Hussain Bolt",
+      "Usan Bolt",
+      "Bolt runner",
+      "Osain Bolt",
+      "Bolt Usain",
+      "Usain Bolt",
+      "Sir Usain Bolt",
+      "Usain Plof"
+    ]
+  },
+  {
+    "source": "triviaq/extracted_answer/0608_triviaq_compress_gpt35_turbo_noise0_topk20.json",
+    "index": 18,
+    "question": "What is connected to the European mainland by a sand Isthmus called the North Front?",
+    "extracted_answer": "Gibraltar is connected to the European mainland by a sand Isthmus called the North Front.",
+    "answers": [
+      "The weather in Gibraltar",
+      "Gibralta",
+      "Wildlife of Gibraltar",
+      "Jabal Al-Tariq",
+      "Name of Gibraltar",
+      "Health in Gibraltar",
+      "Fauna of Gibraltar",
+      "Gibraltar east",
+      "Gibraltor",
+      "Cebelitarık",
+      "Air Force of Gibraltar",
+      "Gibraltar/Geography",
+      "List of towns in Gibraltar",
+      "Army of Gibraltar",
+      "Gibraltar/Military",
+      "Conscription in Gibraltar",
+      "Gibraltar",
+      "Gilbratar",
+      "Gibraltar/Transnational issues",
+      "Gibraltar/History",
+      "Girbraltar",
+      "Gibraltar, Gibraltar",
+      "List of cities in Gibraltar",
+      "Gebel-al-Tarik",
+      "Capital of Gibraltar",
+      "Gibralter",
+      "Military of Gibraltar",
+      "Geography of Gibraltar",
+      "Jabal Tariq",
+      "Flora of Gibraltar",
+      "Gilbraltar",
+      "Gibraltar 300",
+      "Jabal al-Tariq",
+      "ISO 3166-1:GI",
+      "Europe/Gibraltar",
+      "Gibilterra",
+      "Jabal al-Tāriq",
+      "Protestantism in Gibraltar",
+      "جبل طارق"
+    ]
+  },
+  {
+    "source": "triviaq/extracted_answer/0608_triviaq_compress_gpt35_turbo_noise0_topk20.json",
+    "index": 24,
+    "question": "How many ‘Triangles' are there on the logo of car manufacturer BMW?",
+    "extracted_answer": "0",
+    "answers": [
+      "four",
+      "Four",
+      "4"
+    ]
+  }
+]
