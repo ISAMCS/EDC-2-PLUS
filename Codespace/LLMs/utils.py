@@ -63,7 +63,7 @@ def mistral7b_instruct_request(prompt: str, temperature: float = 0.0) -> str:
     response.raise_for_status()
     return response.json()["choices"][0]["message"]["content"].strip()
 
-def gpt35_turbo_0613_request(prompt: str, temperature: float = 0.0) -> str:
+def gpt35_turbo_0613_request(prompt: str, temperature: float = 0.0, max_retries: int = 5, backoff_factor: float = 2.0) -> str:
     headers = {
         "Authorization": f"Bearer {KEY}",
         "Content-Type": "application/json"
@@ -74,9 +74,19 @@ def gpt35_turbo_0613_request(prompt: str, temperature: float = 0.0) -> str:
         "temperature": temperature,
         "max_tokens": 512,
     }
-    response = requests.post(API_URL, headers=headers, json=payload)
-    response.raise_for_status()
-    return response.json()["choices"][0]["message"]["content"].strip()
+    for attempt in range(max_retries):
+        try:
+            response = requests.post(API_URL, headers=headers, json=payload, timeout=60)
+            response.raise_for_status()
+            return response.json()["choices"][0]["message"]["content"].strip()
+        except requests.exceptions.RequestException as e:
+            if attempt < max_retries - 1:
+                wait = backoff_factor ** attempt
+                print(f"Request failed (attempt {attempt+1}/{max_retries}): {e}. Retrying in {wait} seconds...")
+                time.sleep(wait)
+            else:
+                print(f"Request failed after {max_retries} attempts: {e}")
+                raise
 
 def Microsoft_Phi4_request(prompt, temperature=0.0):
     return microsoft_phi4_reasoning_plus_request(prompt, temperature)

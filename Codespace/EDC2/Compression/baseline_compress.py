@@ -11,7 +11,6 @@ import requests
 from requests.auth import HTTPBasicAuth
 import concurrent.futures
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from Codespace.LLMs import utils
 import sys
 import os
 import re

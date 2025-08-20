@@ -3,6 +3,8 @@ from Codespace.EDC2plus.Core_Modules.query_guard import GuardedRetriever
 from Codespace.EDC2plus.Core_Modules.temporal_router import TemporalRouter
 from Codespace.EDC2plus.Core_Modules.temporal_router import classify_query_temporal
 from Codespace.LLMs import utils
+from Codespace.EDC2plus.Core_Modules.grounding import sentence_level_ground
+from Codespace.EDC2plus.Core_Modules.retrieval_evaluator import RetrievalEvaluator
 
 def get_llm_response(prompt):
 	# Use the same LLM call as in EDC2 OG, via utils
@@ -38,6 +40,7 @@ dataset = sys.argv[3]
 topkk = ast.literal_eval(sys.argv[4])
 noises = ast.literal_eval(sys.argv[5])
 benchmark = sys.argv[6]
+toggle = sys.argv[7] if len(sys.argv) > 7 else None
 
 # Embedding model setup
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -76,14 +79,24 @@ def llm_compress_cluster(cluster, question, llm_prompt_func):
 	"""
 	return get_llm_response(prompt)
 
-def process_case(case, llm_prompt_func):
-	# 1. Temporal router
-	case['temporal_class'] = classify_query_temporal(case['question'])
-	# 2. Query stability guard
-	case['stability'] = check_query_stability(case['question'])
-	# 3. Rerank passages
+def process_case(case, llm_prompt_func, toggle):
+	# Ablation logic: only run relevant module for each toggle
+	if toggle == "stability":
+		case['stability'] = check_query_stability(case['question'])
+	elif toggle == "temporal":
+		case['temporal_class'] = classify_query_temporal(case['question'])
+	elif toggle == "conflict":
+		case['claims'] = sentence_level_ground(case['question'], case['passages'], eval_model=eval_model)
+	elif toggle == "calibration":
+		case['confidence'] = RetrievalEvaluator(case['question'], case['passages'])
+	elif toggle == "all":
+		case['stability'] = check_query_stability(case['question'])
+		case['temporal_class'] = classify_query_temporal(case['question'])
+		case['claims'] = sentence_level_ground(case['question'], case['passages'], eval_model=eval_model)
+		case['confidence'] = RetrievalEvaluator(case['question'], case['passages'])
+	# Rerank passages
 	reranked = rerank_passages(case['passages'], case['question'])
-	# 4. Clustering (simple agglomerative by embedding similarity)
+	# Clustering
 	clusters = []
 	used = set()
 	for i, passage in enumerate(reranked):
@@ -100,28 +113,29 @@ def process_case(case, llm_prompt_func):
 					used.add(j)
 		used.add(i)
 		clusters.append(cluster)
-	# 5. Compress clusters
+	# Compress clusters
 	compressed_blocks = [llm_compress_cluster(cluster, case['question'], get_llm_response) for cluster in clusters]
 	case['compressed_blocks'] = compressed_blocks
-	# TODO: Add conflict detection, calibration, memo write-back, answer generation
 	return case
 
 def run(topk, noise):
-	global eval_model, date, dataset, benchmark
-	# Load cases
-	case_file = f"{dataset}/datasets/{dataset}_results_random_{benchmark}_w_negative_passages_noise{noise}_topk{topk}_embedding.json"
+	global eval_model, date, dataset, benchmark, toggle
+	# Only run with 'full' benchmark and each toggle
+	case_file = f"{dataset}/datasets/{dataset}_results_random_full_w_negative_passages_noise{noise}_topk{topk}_embedding.json"
 	with open(case_file, "r", encoding="utf-8") as lines:
 		cases = json.load(lines)
 		final_result = []
 		# Choose LLM prompt function (stub)
 		def llm_prompt_func(prompt):
-			# TODO: Replace with actual LLM call
-			return f"[LLM-compressed block for prompt: {prompt[:60]}...]"
+			return get_llm_response(prompt)
 		for case in tqdm(cases):
-			result = process_case(case, llm_prompt_func)
+			result = process_case(case, llm_prompt_func, toggle)
 			final_result.append(result)
-		# Save results
-		res_file = f"{dataset}/datasets/case_{date}_{dataset}_summary_edc2plus_compress_{eval_model}_noise{noise}_topk{topk}.json"
+		# Save results with toggle in filename
+		res_file = f"{dataset}/datasets/case_{date}_{dataset}_summary_edc2plus_compress_{eval_model}_noise{noise}_topk{topk}_full"
+		if toggle:
+			res_file += f"_{toggle}"
+		res_file += ".json"
 		with open(res_file, "w", encoding="utf-8") as json_file:
 			json.dump(final_result, json_file, ensure_ascii=False, indent=4)
 

@@ -392,7 +392,7 @@
             "Tatum on radio in 1935, \"they have devised this trick to make people believe that one man is playing the piano, when I know at least three people are playing.\" Jazz pianist Kenny Barron commented, \"I have every record [Tatum] ever made—and I try never to listen to them ... If I did, I'd throw up my hands and give up!\" Count Basie called him the eighth wonder of the world. Dave Brubeck observed, \"I don't think there's any more chance of another Tatum turning up than another Mozart.\" Dizzy Gillespie said, \"First you speak of Art Tatum, then take"
         ],
         "response": "piano",
-        "extracted_answer": "Piano"
+        "extracted_answer": "piano"
     },
     {
         "question": "In which present day African nation are the Amhara and Oromo peoples to be found?",
@@ -866,7 +866,7 @@
             "Billy Joel was among the songwriters to mention Reagan as a recent president on his 1989 single, \"We Didn't Start the Fire,\" and New York City hardcore band Sick Of It All revived their genre's pariah in their 1992 song \"We Want the Truth.\" Rage Against the Machine's 2001 album \"Evil Empire\" takes its title from name Reagan repeatedly used to describe the U.S.S.R. In an interview with MTV, Rage's frontman Zack de la Rocha explained, \"The title \"Evil Empire\" is taken from what Rage Against The Machine see as Ronald Reagan's slander of the Soviet Union in the eighties,",
             "the success of the Republican Party. He brought together a coalition of economic conservatives, who supported his supply side economics; foreign policy conservatives, who favored his staunch opposition to Communism and the Soviet Union; and social conservatives, who identified with his religious and social ideals. Reagan labeled the Soviet Union the \"evil empire.\" Conservatives also supported the Reagan Doctrine, under which the U.S. provided military and other aid to insurgency movements resisting governments aligned with the Soviet Union. For these and other efforts, Reagan was attacked by liberals at the time as a dangerous warmonger, but conservative historians assert that"
         ],
-        "response": "the Soviet Union",
+        "response": "Soviet Union",
         "extracted_answer": "Soviet Union"
     },
     {
@@ -1267,7 +1267,7 @@
             "The Federalist Papers\", advocating ratification of the Constitution. The constitutions drafted by Jay and Adams for their respective states of New York (1777) and Massachusetts (1780) were heavily relied upon when creating language for the US Constitution. Jay, Adams and Franklin negotiated the Treaty of Paris (1783) that would end the American Revolutionary War. Washington was Commander-in-Chief of the Continental Army and was President of the Constitutional Convention. All held additional important roles in the early government of the United States, with Washington, Adams, Jefferson, and Madison serving as President. Jay was the nation's first Chief Justice, Hamilton was the"
         ],
         "response": "James Madison",
-        "extracted_answer": "James Madison, the fourth President of the United States."
+        "extracted_answer": "James Madison, the Fourth President of the United States."
     },
     {
         "question": "What is the fifth event in the heptathlon",
@@ -2562,7 +2562,7 @@
             "of foreign affairs under Maxim Litvinov. This, as well as the reluctance of the British and French governments to sign a full-scale anti-German political and military alliance with the USSR, led to the Molotov–Ribbentrop pact between the Soviet Union and Germany in late August 1939. The separate Tripartite Pact between what became the three prime Axis Powers would not be signed until some four years after the Anti-Comintern pact. The war was fought between Nazi Germany, its allies and Finland, against the Soviet Union. The conflict began on 22 June 1941 with the Operation Barbarossa offensive, when Axis forces crossed"
         ],
         "response": "Operation Barbarossa was the German invasion of the Soviet Union that opened up the Eastern Front of World War II.",
-        "extracted_answer": "Operation Barbarossa occurred in 1941, marking the German invasion of the Soviet Union and the beginning of the Eastern Front in World War II."
+        "extracted_answer": "Operation Barbarossa took place in 1941, marking the German invasion of the Soviet Union and the opening of the Eastern Front in World War II."
     },
     {
         "question": "In what Beijing square were democracy activists massacred in 1989?",

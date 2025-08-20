@@ -10,7 +10,6 @@ import os
 from Codespace.LLMs import utils
 from copy import deepcopy
 
-# python codes/run_methods/eval_baseline_compress.py gpt35_turbo 0604 triviaq "[20]" "[0]" full
 
 eval_model = sys.argv[1] 
 date = sys.argv[2]

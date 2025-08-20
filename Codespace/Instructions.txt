@@ -82,22 +82,36 @@ python Codespace/Dataset_Preparation/classify_noise_topk.py triviaq "[20]" "[0]"
 
 # Step 4: Run the EDC2 Pipeline
 
-See Codespace/Scripts/EDC2/run_edc2_compress.py
+PYTHONPATH=. python Codespace/Scripts/EDC2/run_edc2_compress.py gpt35_turbo 0608 triviaq "[20]" "[0]" full
 
-# Step 5: Run the EDC2+ Pipeline
+# Step 5: Run the EDC2+ Pipeline with different toggles
 
-See Codespace/Scripts/EDC2+/run_edc2plus_compress.py
+Ablation Compression (EDC2plus, full benchmark, each toggle):
+
+PYTHONPATH=. python Codespace/EDC2plus/Compression/baseline_compress_plus.py gpt35_turbo 0608 triviaq "[20]" "[0]" full stability
+PYTHONPATH=. python Codespace/EDC2plus/Compression/baseline_compress_plus.py gpt35_turbo 0608 triviaq "[20]" "[0]" full temporal
+PYTHONPATH=. python Codespace/EDC2plus/Compression/baseline_compress_plus.py gpt35_turbo 0608 triviaq "[20]" "[0]" full conflict
+PYTHONPATH=. python Codespace/EDC2plus/Compression/baseline_compress_plus.py gpt35_turbo 0608 triviaq "[20]" "[0]" full calibration
+PYTHONPATH=. python Codespace/EDC2plus/Compression/baseline_compress_plus.py gpt35_turbo 0608 triviaq "[20]" "[0]" full all
+
+Ablation Extraction (EDC2plus, full benchmark, each toggle):
+
+PYTHONPATH=. python Codespace/EDC2plus/Extraction/extracted_answer_topkk_compress.py 0608 triviaq gpt35_turbo "[20]" "[0]" full stability
+PYTHONPATH=. python Codespace/EDC2plus/Extraction/extracted_answer_topkk_compress.py 0608 triviaq gpt35_turbo "[20]" "[0]" full temporal
+PYTHONPATH=. python Codespace/EDC2plus/Extraction/extracted_answer_topkk_compress.py 0608 triviaq gpt35_turbo "[20]" "[0]" full conflict
+PYTHONPATH=. python Codespace/EDC2plus/Extraction/extracted_answer_topkk_compress.py 0608 triviaq gpt35_turbo "[20]" "[0]" full calibration
+PYTHONPATH=. python Codespace/EDC2plus/Extraction/extracted_answer_topkk_compress.py 0608 triviaq gpt35_turbo "[20]" "[0]" full all
 
 # Step 6: Analyze EDC2 Failures
 
 python Codespace/Analysis/check_extracted_f1.py triviaq/extracted_answer/0608_triviaq_compress_gpt35_turbo_noise0_topk20.json
 
-# Step 7: Analyze EDC2+ Failures
+# Step 7: Analyze EDC2+ Failures (toggles, and benchmarks)
 
 python Codespace/Analysis/check_extracted_f1.py triviaq/extracted_answer/0608_triviaq_edc2plus_compress_gpt35_turbo_noise0_topk20.json
 
-# Step 8: Analyze the two scores
+# Step 8: Ablation Scoring: 
 
-python Codespace/Analysis/compare_both.py
+PYTHONPATH=. python Codespace/Experiments/ablation_runner.py --config Codespace/Experiments/ablation.yaml
 
 

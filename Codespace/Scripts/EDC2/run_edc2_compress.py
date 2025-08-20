@@ -1,6 +1,13 @@
 import sys
 import subprocess
 
+eval_model = sys.argv[1]
+date = sys.argv[2]
+dataset = sys.argv[3]
+topkk = sys.argv[4]
+noises = sys.argv[5]
+benchmark = sys.argv[6]
+
 
 print("start_to_run")
 print("start_to_summarize")
@@ -24,7 +31,7 @@ benchmark = sys.argv[6]
 
 # Single File Run Command: python Codespace/EDC2/Compression/baseline_compress.py "$eval_model" "$date" "$dataset" "$topkk" "$noises" "$benchmark"
 
-subprocess.run(["python", "Codespace/EDC2/Compression/baseline_compress.py", eval_model, date, dataset, topkk ,noises, benchmark])
+#subprocess.run(["python", "Codespace/EDC2/Compression/baseline_compress.py", eval_model, date, dataset, topkk ,noises, benchmark])
 print("end_summarize")
 print("start_to_eval")
 
@@ -95,7 +102,5 @@ benchmark = sys.argv[6]
 # Single Run Command: python Codespace/EDC2/Evaluation/caculate_F1_EM_compress.py "$date" "$dataset" "$eval_model" "$topkk" "$noises" "$benchmark"
 
 print("start_to_caculate_F1_EM") 
-subprocess.run(["python", "Codespace/EDC2/Evaluation/caculate_F1_EM_compress.py", date, dataset, eval_model, topkk, noises, benchmark])
+#subprocess.run(["python", "Codespace/EDC2/Evaluation/caculate_F1_EM_compress.py", date, dataset, eval_model, topkk, noises, benchmark])
 print("end_caculate_F1_EM")
-
-'''

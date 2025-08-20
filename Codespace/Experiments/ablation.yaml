@@ -1,0 +1,30 @@
+dataset: "triviaq"
+date: "0608"
+topk: "20"
+noise: "0"
+seed: 1337
+# Set this to true if you want to run baseline once
+run_baseline: true
+
+# Paths to your calc scripts
+baseline_script: "Codespace/EDC2/Calculation/caculate_F1_EM_compress.py"
+plus_script: "Codespace/EDC2plus/Calculation/caculate_F1_EM_compress_plus.py"
+
+# How to parse metrics: "json" or "regex"
+parser: "regex"
+
+# Variants: name + the specific EDC2plus result file to score
+variants:
+  - name: baseline
+    plus_file: "0608_triviaq_compress_gpt35_turbo_noise0_topk20.json"
+    eval_method: "gpt35_turbo"
+  - name: +stability
+    plus_file: "0608_triviaq_edc2plus_compress_gpt35_turbo_noise0_topk20_stability.json"
+  - name: +temporal
+    plus_file: "0608_triviaq_edc2plus_compress_gpt35_turbo_noise0_topk20_temporal.json"
+  - name: +conflict
+    plus_file: "0608_triviaq_edc2plus_compress_gpt35_turbo_noise0_topk20_conflict.json"
+  - name: +calibration
+    plus_file: "0608_triviaq_edc2plus_compress_gpt35_turbo_noise0_topk20_calibration.json"
+  - name: all
+    plus_file: "0608_triviaq_edc2plus_compress_gpt35_turbo_noise0_topk20_all.json"

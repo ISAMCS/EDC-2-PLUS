@@ -11,12 +11,16 @@ from Codespace.LLMs import utils
 import ast
 import time
 
+# Parse arguments
+# Usage: python extracted_answer_topkk_compress.py date dataset eval_model topkk noises benchmark [toggle] [output_file]
 date = sys.argv[1]
 dataset = sys.argv[2]
 eval_model = sys.argv[3]
 topkk = ast.literal_eval(sys.argv[4])
 noises = ast.literal_eval(sys.argv[5])
 benchmark = sys.argv[6]
+toggle = sys.argv[7] if len(sys.argv) > 7 else None
+custom_output_file = sys.argv[8] if len(sys.argv) > 8 else None
 
 if eval_model == "llama4":
     assess_model = utils.llama4_maverick_request
@@ -64,15 +68,61 @@ Reformatted Answer: """
 
 def process_slice(slice_cases):
     for case in tqdm(slice_cases):
-        res = 0
-        text = _run_nli_GPT3turbo(case)
+        # Ablation logic: construct evidence for each toggle
+        evidence_blocks = case.get('compressed_blocks', [])
+        extra_info = ""
+        if toggle == "stability":
+            extra_info = f"Stability: {case.get('stability', '')}"
+            evidence_blocks = [extra_info] if extra_info.strip() else []
+        elif toggle == "temporal":
+            extra_info = f"Temporal Class: {case.get('temporal_class', '')}"
+            evidence_blocks = [extra_info] if extra_info.strip() else []
+        elif toggle == "conflict":
+            # Use claims/conflict info if available
+            conflict_info = case.get('conflict', case.get('claims', ''))
+            extra_info = f"Conflict Info: {conflict_info}"
+            evidence_blocks = [extra_info] if extra_info.strip() else []
+        elif toggle == "calibration":
+            extra_info = f"Calibration/Confidence: {case.get('calibration', case.get('confidence', ''))}"
+            evidence_blocks = [extra_info] if extra_info.strip() else []
+        elif toggle == "all":
+            # Use all available info
+            all_blocks = []
+            if 'stability' in case:
+                all_blocks.append(f"Stability: {case['stability']}")
+            if 'temporal_class' in case:
+                all_blocks.append(f"Temporal Class: {case['temporal_class']}")
+            if 'conflict' in case:
+                all_blocks.append(f"Conflict Info: {case['conflict']}")
+            elif 'claims' in case:
+                all_blocks.append(f"Claims: {case['claims']}")
+            if 'calibration' in case:
+                all_blocks.append(f"Calibration: {case['calibration']}")
+            elif 'confidence' in case:
+                all_blocks.append(f"Confidence: {case['confidence']}")
+            # Add original compressed blocks
+            all_blocks.extend(case.get('compressed_blocks', []))
+            evidence_blocks = all_blocks
+        # Compose a new case for the ablation prompt
+        ablation_case = case.copy()
+        ablation_case['compressed_blocks'] = evidence_blocks
+        text = _run_nli_GPT3turbo(ablation_case)
         case["extracted_answer"] = text
     return slice_cases
 
 def run(topk, noise):
-    global eval_method, date, dataset
-    case_file = f"{dataset}/results/{date}_{dataset}_edc2plus_compress_{eval_model}_noise{noise}_topk{topk}.json"
-    res_file = f"{dataset}/extracted_answer/{date}_{dataset}_edc2plus_compress_{eval_model}_noise{noise}_topk{topk}.json"
+    global eval_model, date, dataset, toggle, custom_output_file
+    # Compose input file name based on benchmark and toggle
+    file_base = f"{dataset}/datasets/case_{date}_{dataset}_summary_edc2plus_compress_{eval_model}_noise{noise}_topk{topk}_{benchmark}"
+    if toggle:
+        file_base += f"_{toggle}"
+    case_file = file_base + ".json"
+    if custom_output_file:
+        res_file = custom_output_file
+    elif toggle:
+        res_file = f"{dataset}/extracted_answer/{date}_{dataset}_edc2plus_compress_{eval_model}_noise{noise}_topk{topk}_{toggle}.json"
+    else:
+        res_file = f"{dataset}/extracted_answer/{date}_{dataset}_edc2plus_compress_{eval_model}_noise{noise}_topk{topk}.json"
     with open(case_file, "r", encoding="utf-8") as lines:
         cases = json.load(lines)
         # Process all cases sequentially (no threading)

@@ -44,11 +44,22 @@ def compute_metrics(dataset):
     em_score = em_total / len(dataset)
     f1_score = f1_total / len(dataset)
     return round(em_score*100,2), round(f1_score*100,2)
+
 for topk in topkk:
     for noise in noises:
-        input_file =  f"{dataset}/extracted_answer/{date}_{dataset}_compress_{eval_method}_noise{noise}_topk{topk}.json"
-        with open(input_file, "r", encoding="utf-8") as f:
-            datasets = json.load(f)
+        custom_file = sys.argv[7] if len(sys.argv) > 7 else None
+        if custom_file and custom_file.endswith('.json'):
+            input_file = f"triviaq/extracted_answer/{custom_file}"
+        elif benchmark and benchmark != "baseline":
+            input_file = f"triviaq/extracted_answer/{date}_{dataset}_edc2plus_compress_{eval_method}_noise{noise}_topk{topk}_{benchmark}.json"
+        else:
+            input_file = f"triviaq/extracted_answer/{date}_{dataset}_compress_{eval_method}_noise{noise}_topk{topk}.json"
+        try:
+            with open(input_file, "r", encoding="utf-8") as f:
+                datasets = json.load(f)
+        except Exception as e:
+            print(f"Could not open {input_file}: {e}")
+            continue
         em_score, f1_score = compute_metrics(datasets)
         results.append([topk, noise, em_score, f1_score])
         print(f"{input_file}: EM: {em_score}, F1: {f1_score}")
