@@ -1,8 +1,8 @@
-| Variant      | EM    | F1    | Time (s) |
-| ------------ | ----- | ----- | -------- |
-| baseline     | 72.0  | 78.76 | 0.96     |
-| +stability   | 92.0  | 94.91 | 0.99     |
-| +temporal    | 100.0 | 100.0 | 0.97     |
-| +conflict    | 96.0  | 96.89 | 0.98     |
-| +calibration | 96.0  | 96.89 | 0.98     |
-| all          | 80.0  | 86.28 | 1.0      |
+| Variant | EM | F1 | Time (s) |
+|---|---|---|---|
+| baseline | None | None | 0.93 |
+| +stability | None | None | 0.88 |
+| +temporal | None | None | 0.93 |
+| +conflict | None | None | 0.88 |
+| +calibration | None | None | 0.87 |
+| all | 84.0 | 84.0 | 0.94 |

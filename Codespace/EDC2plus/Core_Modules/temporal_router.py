@@ -30,19 +30,18 @@ def _is_time_sensitive(q: str) -> bool:
         return True
     return False
 
-def TemporalRouter(question: str = None):
-    """
-    Callable class pattern for convenience: route = TemporalRouter()(question)
-    """
-    class _Router:
-        def __call__(self, question: str) -> dict:
-            ts = _is_time_sensitive(question)
-            policy: Policy = "local-only"
-            if ts:
-                policy = "hybrid"
-            return {
-                "policy": policy,
-                "freshness_filter_days": 45 if ts else None,
-                "reason": "Detected time-sensitive phrasing" if ts else "No recency cues detected"
-            }
-    return _Router()
+class TemporalRouter:
+    def __init__(self):
+        pass
+    def __call__(self, question: str) -> dict:
+        ts = classify_query_temporal(question)
+        policy = "hybrid" if ts == "time-sensitive" else "local-only"
+        freshness_filter_days = 45 if policy == "hybrid" else None
+        # Advisory only: do not enforce dropping static trivia
+        return {
+            "policy": policy,
+            "freshness_filter_days": freshness_filter_days,
+            "reason": "Detected time-sensitive phrasing" if policy == "hybrid" else "No recency cues detected",
+            "prefer_recent": policy == "hybrid",
+            "advisory_only": True
+        }

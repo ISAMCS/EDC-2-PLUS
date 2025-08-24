@@ -7,8 +7,7 @@ open source compatible and more modular
 
 Version two compares EDC2 and EDC2+ with new features including:
 
-    1. Retrieval “sanity checks” with negation & counterfactual probes 
-    (via the query-stability guard that perturbs questions and checks retrieval robustness)
+    1. Retrieval
 
     2.Time-aware retrieval policy (via the temporal router that classifies queries as time-sensitive or static)
 
@@ -74,11 +73,11 @@ Now the dataset is too big so I create a function to split the size of the json
 
 # Step 2: Create dev split for the dataset
 
-python Codespace/Dataset_Preparation/make_dev_split.py triviaq 25 -> insert number of questions to split
+PYTHONPATH=. python Codespace/Dataset_Preparation/make_dev_split.py triviaq 25 -> insert number of questions to split
 
 # Step 3: Prepare the Dataset
 
-python Codespace/Dataset_Preparation/classify_noise_topk.py triviaq "[20]" "[0]" gpt35_turbo
+PYTHONPATH=. python Codespace/Dataset_Preparation/classify_noise_topk.py triviaq "[20]" "[0]" gpt35_turbo
 
 # Step 4: Run the EDC2 Pipeline
 
@@ -92,7 +91,13 @@ PYTHONPATH=. python Codespace/EDC2plus/Compression/baseline_compress_plus.py gpt
 PYTHONPATH=. python Codespace/EDC2plus/Compression/baseline_compress_plus.py gpt35_turbo 0608 triviaq "[20]" "[0]" full temporal
 PYTHONPATH=. python Codespace/EDC2plus/Compression/baseline_compress_plus.py gpt35_turbo 0608 triviaq "[20]" "[0]" full conflict
 PYTHONPATH=. python Codespace/EDC2plus/Compression/baseline_compress_plus.py gpt35_turbo 0608 triviaq "[20]" "[0]" full calibration
-PYTHONPATH=. python Codespace/EDC2plus/Compression/baseline_compress_plus.py gpt35_turbo 0608 triviaq "[20]" "[0]" full all
+PYTHONPATH=. python Codespace/EDC2plus/Compression/baseline_compress_plus.py gpt35_turbo 0608 triviaq "[20]" "[0]" full al
+
+Evaluation
+
+PYTHONPATH=. python Codespace/EDC2plus/Evaluation/eval_baseline_compress_plus.py gpt35_turbo 0608 triviaq "[20]" "[0]" full all
+
+PYTHONPATH=. python Codespace/EDC2plus/Extraction/extracted_answer_topkk_compress.py 0608 triviaq gpt35_turbo "[20]" "[0]" full all
 
 Ablation Extraction (EDC2plus, full benchmark, each toggle):
 
@@ -108,10 +113,15 @@ python Codespace/Analysis/check_extracted_f1.py triviaq/extracted_answer/0608_tr
 
 # Step 7: Analyze EDC2+ Failures (toggles, and benchmarks)
 
-python Codespace/Analysis/check_extracted_f1.py triviaq/extracted_answer/0608_triviaq_edc2plus_compress_gpt35_turbo_noise0_topk20.json
+python Codespace/Analysis/check_extracted_f1.py triviaq/extracted_answer/0608_triviaq_edc2plus_compress_gpt35_turbo_noise0_topk20_all.json
 
 # Step 8: Ablation Scoring: 
 
 PYTHONPATH=. python Codespace/Experiments/ablation_runner.py --config Codespace/Experiments/ablation.yaml
 
+PYTHONPATH=. python Codespace/Dataset_Preparation/classify_noise_topk.py triviaq "[20]" "[0]" gpt35_turbo
+PYTHONPATH=. python Codespace/EDC2plus/Compression/baseline_compress_plus.py gpt35_turbo 0608 triviaq "[20]" "[0]" full all
+PYTHONPATH=. python Codespace/EDC2plus/Evaluation/eval_baseline_compress_plus.py gpt35_turbo 0608 triviaq "[20]" "[0]" full all
+PYTHONPATH=. python Codespace/EDC2plus/Extraction/extracted_answer_topkk_compress.py 0608 triviaq gpt35_turbo "[20]" "[0]" full all
+PYTHONPATH=. python Codespace/Experiments/ablation_runner.py --config Codespace/Experiments/ablation.yaml
 

@@ -46,7 +46,8 @@ def main(json_path, threshold=0.5):
                 "index": idx,
                 "question": entry.get('question', ''),
                 "extracted_answer": extracted,
-                "answers": answers
+                "answers": answers,
+                "compressed_blocks": entry.get('compressed_blocks', [])
             })
     debug_dir = "triviaq/Debug"
     os.makedirs(debug_dir, exist_ok=True)

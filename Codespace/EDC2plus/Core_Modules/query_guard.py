@@ -1,4 +1,6 @@
 from __future__ import annotations
+from Codespace.LLMs.utils import get_embedding
+import numpy as np
 
 def check_query_stability(question):
     """
@@ -48,15 +50,28 @@ class GuardResult:
     probes: List[str]
     probe_ids: List[List[str]]
 
+
 class GuardedRetriever:
-    """
-    If `passages` is provided: uses an internal TF-IDF retriever over the list of passages.
-    Otherwise you can pass a `retriever_fn` that takes (query, k) -> list of {id, title, text}.
-    """
     def __init__(self, passages: Optional[List[Dict[str, Any]]] = None,
                  retriever_fn=None):
         self.passages = passages
         self.retriever_fn = retriever_fn
+
+    def attach_metadata(self, question: str, k: int = 10) -> List[Dict[str, Any]]:
+        """
+        Returns passages with attached guard metadata: stability, temporal_class, confidence.
+        """
+        from Codespace.EDC2plus.Core_Modules.temporal_router import TemporalRouter
+        from Codespace.EDC2plus.Core_Modules.retrieval_evaluator import RetrievalEvaluator
+        stability_info = self.stability(question, k=k)
+        temporal_info = TemporalRouter()(question)
+        ranked = self.retrieve(question, k=k, tau=0.4)
+        confidence_label, confidence_score = RetrievalEvaluator().evaluate(question, [p['text'] for p in ranked])
+        for p in ranked:
+            p['stability'] = stability_info.stability_score
+            p['temporal_class'] = temporal_info['policy']
+            p['confidence'] = confidence_score
+        return ranked
 
     # ---------------------- PERTURBERS ----------------------
     def _negate(self, q: str) -> str:
@@ -72,12 +87,7 @@ class GuardedRetriever:
         if len(caps) >= 2:
             a, b = caps[0], caps[1]
             return re.sub(rf"\b{a}\b", "__TMP__", q).replace(b, a).replace("__TMP__", b)
-        # fallback: swap a year if present
-        years = re.findall(r"\b(19|20)\d{2}\b", q)
-        if years:
-            y = years[0]
-            yy = str(int("".join(years[0])) + 1)
-            return q.replace(y, yy)
+        # fallback: skip year swap (no-op)
         return q
 
     def _except_probe(self, q: str) -> str:
@@ -96,38 +106,38 @@ class GuardedRetriever:
 
     # ---------------------- RETRIEVAL ----------------------
     def _rank_passages(self, query: str, k: int) -> List[Dict[str, Any]]:
-        if not self.passages:
-            raise ValueError("Offline mode requires `passages` to be provided")
-        texts = [(p.get("id") or str(i), p.get("title","") + " " + p.get("text","")) 
-                 for i, p in enumerate(self.passages)]
-        ids, docs = zip(*texts)
-
+        # Add entity/locale anchors
+        anchors = re.findall(r"[A-Z][a-zA-Z0-9\-']+", query)
+        # BM25 scoring
         if _HAS_SK:
             try:
                 vec = TfidfVectorizer(stop_words="english", max_features=50000)
-                X = vec.fit_transform(docs + (query,))
-                qv = X[-1]
-                D = X[:-1]
-                sims = (D @ qv.T).toarray().ravel()
-                order = sims.argsort()[::-1][:k]
-                return [self.passages[i] for i in order]
+                X = vec.fit_transform([p.get("text", "") for p in self.passages] + [query])
+                bm25_scores = (X[:-1] @ X[-1].T).toarray().ravel()
             except Exception:
-                pass
-
-        # fallback: simple token overlap
-        q_toks = set(re.findall(r"\w+", query.lower()))
-        scored = []
-        for i, d in enumerate(docs):
-            toks = set(re.findall(r"\w+", d.lower()))
-            sim = len(q_toks & toks) / (len(q_toks) + 1e-6)
-            scored.append((sim, i))
-        scored.sort(reverse=True)
-        return [self.passages[i] for _, i in scored[:k]]
+                bm25_scores = np.zeros(len(self.passages))
+        else:
+            bm25_scores = np.zeros(len(self.passages))
+        # Embedding scoring
+        q_emb = get_embedding(query)
+        emb_scores = [np.dot(q_emb, get_embedding(p.get("text", ""))) /
+                    (np.linalg.norm(q_emb) * np.linalg.norm(get_embedding(p.get("text", ""))) + 1e-8)
+                    for p in self.passages]
+        # Penalize passages lacking overlap with anchors
+        anchor_scores = []
+        for p in self.passages:
+            text = p.get("text", "")
+            score = sum(1 for a in anchors if a in text)
+            anchor_scores.append(score)
+        anchor_scores = np.array(anchor_scores)
+        hybrid_scores = 0.4 * bm25_scores + 0.4 * np.array(emb_scores) + 0.2 * anchor_scores
+        order = np.argsort(hybrid_scores)[::-1][:k]
+        return [self.passages[i] for i in order]
 
     def _ids(self, items: List[Dict[str, Any]]) -> List[str]:
         out = []
         for p in items:
-            pid = p.get("id") or p.get("doc_id") or p.get("title") or hashlib.md5((p.get("text",""))[:128].encode()).hexdigest()
+            pid = p.get("id") or p.get("doc_id") or p.get("title") or hashlib.md5((p.get("text","") )[:128].encode()).hexdigest()
             out.append(str(pid))
         return out
 
@@ -141,7 +151,6 @@ class GuardedRetriever:
     def stability(self, query: str, k: int = 10) -> GuardResult:
         base = self._rank_passages(query, k)
         base_ids = self._ids(base)
-
         probes = self.perturb_queries(query, n=3)
         overlaps = []
         probe_ids = []
@@ -150,14 +159,14 @@ class GuardedRetriever:
             pids = self._ids(ranked)
             probe_ids.append(pids)
             overlaps.append(self._jaccard(base_ids, pids))
-
         score = float(sum(overlaps)/len(overlaps)) if overlaps else 1.0
-
-        # action policy
+        # Use check_query_stability for action
+        stability_level = check_query_stability(query)
         action = "pass"
-        if score < 0.25: action = "ask_followup"
-        elif score < 0.5: action = "tighten"
-
+        if stability_level == "low" or score < 0.25:
+            action = "ask_followup"
+        elif stability_level == "medium" or score < 0.5:
+            action = "tighten"
         result = GuardResult(
             query=query, k=k, stability_score=round(score,3),
             action=action, base_ids=base_ids,
@@ -176,14 +185,23 @@ class GuardedRetriever:
             return ranked
 
         # tighten: reduce k and require higher lexical match
-        tightened_k = max(5, int(k * 0.5))
+        tightened_k = max(6, int(k * 0.6))
         q_toks = set(re.findall(r"\w+", query.lower()))
         filtered = []
         for p in ranked:
             toks = set(re.findall(r"\w+", (p.get("title","") + " " + p.get("text","")).lower()))
-            if len(q_toks & toks) / (len(q_toks) + 1e-6) >= 0.25:
+            if len(q_toks & toks) / (len(q_toks) + 1e-6) >= 0.1:
                 filtered.append(p)
             if len(filtered) >= tightened_k:
                 break
-
+        return filtered or ranked[:tightened_k]
+        tightened_k = max(6, int(k * 0.6))
+        q_toks = set(re.findall(r"\w+", query.lower()))
+        filtered = []
+        for p in ranked:
+            toks = set(re.findall(r"\w+", (p.get("title","") + " " + p.get("text",""))).lower())
+            if len(q_toks & toks) / (len(q_toks) + 1e-6) >= 0.1:
+                filtered.append(p)
+            if len(filtered) >= tightened_k:
+                break
         return filtered or ranked[:tightened_k]

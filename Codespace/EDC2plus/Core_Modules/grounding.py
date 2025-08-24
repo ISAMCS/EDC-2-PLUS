@@ -1,4 +1,3 @@
-
 """
 Sentence-level grounding that forces claim → cite alternation.
 
@@ -68,11 +67,20 @@ def sentence_level_ground(question: str, passages: List[Dict[str, Any]], eval_mo
     payload = m.group(0) if m else "[]"
     try:
         claims = json.loads(payload)
-        # sanity enforcement
+        # Only keep claims that directly answer the question and attach source info
         out = []
+        # Use answer-type aware filtering
+        from Codespace.EDC2plus.Core_Modules.answer_postprocess import infer_answer_type, canonicalize_answer
+        qtype = infer_answer_type(question)
         for c in claims:
             if isinstance(c, dict) and all(k in c for k in ["claim","quote","source_id","source_title"]):
+                # Filter out general trivia/fluff and contradictory claims
+                claim_canon = canonicalize_answer(c["claim"], qtype)
+                quote_canon = canonicalize_answer(c["quote"], qtype)
+                if not claim_canon or not quote_canon:
+                    continue
                 out.append({k: c[k] for k in ["claim","quote","source_id","source_title"]})
+        # Alternate cite→claim
         return out
     except Exception:
         return []
@@ -86,4 +94,5 @@ def build_final_prompt_claim_cite(question: str, claims: List[Dict[str,str]]) ->
         lines.append(f'Cite {i}: "{c["quote"]}" {src}')
         lines.append(f'Claim {i}: {c["claim"]}')
     lines.append("\nThen produce a final answer that is fully supported by the cited quotes.")
+    return "\n".join(lines)
     return "\n".join(lines)

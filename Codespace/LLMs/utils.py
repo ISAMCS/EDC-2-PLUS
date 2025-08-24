@@ -1,4 +1,24 @@
-# Open Router API requests for various models
+import torch
+from transformers import AutoTokenizer, AutoModel
+# Use a stronger embedding model
+path = "sentence-transformers/all-MiniLM-L6-v2"  # Free model from Hugging Face
+tokenizer = AutoTokenizer.from_pretrained(path)
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+embed_model = AutoModel.from_pretrained(path, torch_dtype=torch.float16).to(device)
+
+def get_embedding(text):
+    # Simple in-memory cache
+    if not hasattr(get_embedding, "_cache"):
+        get_embedding._cache = {}
+    cache = get_embedding._cache
+    if text in cache:
+        return cache[text]
+    with torch.no_grad():
+        inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True, max_length=128).to(device)
+        feature = embed_model(**inputs, output_hidden_states=True, return_dict=True).pooler_output
+    emb = feature.squeeze().cpu().numpy()
+    cache[text] = emb
+    return emb
 
 import re
 import string
@@ -8,7 +28,8 @@ import os
 from dotenv import load_dotenv
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import torch
-
+from transformers import AutoTokenizer, AutoModel
+import torch
 load_dotenv()
 KEY = os.getenv("KEY")
 API_URL = "https://openrouter.ai/api/v1/chat/completions"

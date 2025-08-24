@@ -45,60 +45,86 @@ else:
 input_file = f"{dataset}/datasets/{dataset}_results_w_negative_passages_full.json"
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-path = "sentence-transformers/all-MiniLM-L6-v2"
+
+# Use a stronger embedding model
+path = "sentence-transformers/multi-qa-MiniLM-L6-cos-v1"  # or "BAAI/bge-large-en" for even stronger recall
 tokenizer = AutoTokenizer.from_pretrained(path)
 model = AutoModel.from_pretrained(path, torch_dtype=torch.float16).to(device)
 
+# Embedding cache
+embedding_cache = {}
+
+
 def get_embedding(text):
+    if text in embedding_cache:
+        return embedding_cache[text]
     with torch.no_grad():
         inputs = tokenizer(text, return_tensors="pt", padding=True, truncation=True, max_length=128).to(device)
         feature = model(**inputs, output_hidden_states=True, return_dict=True).pooler_output
-    return feature.squeeze().cpu().numpy()
+    emb = feature.squeeze().cpu().numpy()
+    embedding_cache[text] = emb
+    return emb
 
 def cosine_similarity(a, b):
     return float(np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b) + 1e-8))
+
 
 def get_llm_ranked_indices(question, passages, k):
     if not passages:
         return []
     passage_list = "\n".join([f"[{i}] {p['text']}" for i, p in enumerate(passages)])
+    # Short, direct prompt with few-shot example
     prompt = f"""
-    You are given a question and a list of passages, each already pre-ranked by embedding similarity to the question. Your task is to further rank these passages by how directly and verifiably they support the most canonical answer.
+You are given a question and a list of passages. Each passage is pre-ranked by embedding similarity.  
+Your task: reorder them by how directly they support the best possible answer.
 
-    Question:
-    "{question}"
+Question:
+"{question}"
 
-    Passages:
-    {passage_list}
+Passages:
+{passage_list}
 
-    1. Carefully identify exactly what the question is asking, including all constraints (such as entity type, date, location, number, or other attributes).
-    2. Determine the type of answer the question is looking for (numeric, entity, date, etc.)
-    3. Determine how certain ambigious answers may be important to the question (e.g if it is asking "How many" then pay attention to the entity that is is asking for and key words for that)
-    4. Rank the passages based on how well they answer the question, considering the following:
-    - Relevance to the question entity or topic, even if not explicitly stated.
-    - Contain key words or phrases that match the question.
-    - Provide specific, verifiable information that can be directly linked to the question.
-    - Avoid passages that are too general, off-topic, or contain irrelevant information.
-    5. Some things to consider:
-        Pay attention to all forms of evidence such as: Tables, figures, lists, text, captions, etc. 
-        Prefer passages that state clear keywords, names entities, numbers, or dates that can be relevant to the question
-    6. If a passage uses ambiguous terms (such as pronouns or abbreviations), use the passage's title or context to resolve ambiguity.
-    7. Deprioritize passages that:
-    - Are not relevant to the question's restriants in general, even if they are topically related.
-    - Mention popular but irrelevant entities.
-    8. Do not add commentary or explanations. Only output the indices of the passages in order of relevance.
-    Answer format: [index1, index2, ..., index{k}]
-    """
+Guidelines:
+1. Identify exactly what the question is asking (entity, number, date, etc.).  
+2. Prefer passages that:
+    - Contain the answer explicitly or provide strong evidence.
+    - Include clear keywords, entities, numbers, or dates tied to the question.  
+    - Use unambiguous language (avoid vague references).  
+    - Prefer passages with explicit answers (numbers, named entities) over general context.
+3. Deprioritize passages that:
+    - Are irrelevant or only loosely related.  
+    - Contain popular but off-topic entities.  
+    - Provide general context without answering.  
+4. If multiple passages are equally good, keep their original order.  
+5. Output only the passage indices in ranked order, no extra text.
+
+Answer format: [index1, index2, ..., index{k}]
+"""
     response = assess_model(prompt)
+    # Post-process: deduplicate, clip, fill, and validate
     try:
         indices = ast.literal_eval(response.strip())
-        if isinstance(indices, list) and all(isinstance(i, int) for i in indices):
-            indices = indices[:k]
+        if isinstance(indices, list):
+            indices = [int(i) for i in indices if isinstance(i, int) and 0 <= i < len(passages)]
+            indices = list(dict.fromkeys(indices))[:k]
             if len(indices) < k:
                 indices += [i for i in range(len(passages)) if i not in indices][:k - len(indices)]
             return indices
     except Exception:
-        pass
+        # Retry with stricter prompt
+        retry_prompt = prompt + "\nReturn a JSON list of integers only."
+        response = assess_model(retry_prompt)
+        try:
+            indices = ast.literal_eval(response.strip())
+            if isinstance(indices, list):
+                indices = [int(i) for i in indices if isinstance(i, int) and 0 <= i < len(passages)]
+                indices = list(dict.fromkeys(indices))[:k]
+                if len(indices) < k:
+                    indices += [i for i in range(len(passages)) if i not in indices][:k - len(indices)]
+                return indices
+        except Exception:
+            pass
+    # Fallback: top-k
     return list(range(min(k, len(passages))))
 
 with open(input_file, "r", encoding="utf-8") as f:
@@ -130,23 +156,38 @@ for topk in topk_list:
            # if TOP_N_EMBEDDING > len(all_passages):
             #    print(f"Warning: TOP_N_EMBEDDING ({TOP_N_EMBEDDING}) > number of passages ({len(all_passages)}). Using {len(all_passages)}.")
 
+
             # --- Step 1: Embedding-based pre-ranking ---
             q_emb = get_embedding(case["question"])
+            passage_embs = [get_embedding(p['text']) for p in all_passages]
             passage_scores = [
-                (i, cosine_similarity(q_emb, get_embedding(p['text'])))
-                for i, p in enumerate(all_passages)
+                (i, cosine_similarity(q_emb, emb))
+                for i, emb in enumerate(passage_embs)
             ]
             passage_scores.sort(key=lambda x: x[1], reverse=True)
             top_n = min(TOP_N_EMBEDDING, len(passage_scores))
             top_indices_by_embedding = [i for i, _ in passage_scores[:top_n]]
             top_passages = [all_passages[i] for i in top_indices_by_embedding]
+            top_passage_embs = [passage_embs[i] for i in top_indices_by_embedding]
 
             # --- Step 2: LLM-based ranking on top-N ---
             llm_indices = get_llm_ranked_indices(case["question"], top_passages, topk)
-            if len(llm_indices) < topk:
-                unused = [i for i in range(len(top_passages)) if i not in llm_indices]
-                llm_indices += unused[:topk - len(llm_indices)]
-            selected = [top_passages[i] for i in llm_indices[:topk]]
+
+            # --- Score Fusion: combine embedding and LLM scores ---
+            # Assign LLM score: higher rank = higher score
+            llm_scores = np.zeros(len(top_passages))
+            for rank, idx in enumerate(llm_indices):
+                if 0 <= idx < len(top_passages):
+                    llm_scores[idx] = len(top_passages) - rank
+            # Normalize embedding scores
+            emb_scores = np.array([cosine_similarity(q_emb, emb) for emb in top_passage_embs])
+            emb_scores = (emb_scores - emb_scores.min()) / (emb_scores.max() - emb_scores.min() + 1e-8)
+            # Fusion: weighted sum (alpha controls balance)
+            alpha = 0.35
+            fusion_scores = alpha * emb_scores + (1 - alpha) * (llm_scores / llm_scores.max() if llm_scores.max() > 0 else llm_scores)
+            fusion_indices = np.argsort(-fusion_scores)[:topk]
+            selected = [top_passages[i] for i in fusion_indices]
+
 
             # --- Step 3: Add noise: replace n passages with random negatives ---
             n = topk * noise // 100

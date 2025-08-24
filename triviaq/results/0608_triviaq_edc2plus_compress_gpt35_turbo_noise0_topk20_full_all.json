@@ -237,7 +237,8 @@
             "- \"The School of Athens\" was painted by the Italian artist Raphael (source: path#chunkN).",
             "- \"The School of Athens\" was painted by the Italian artist Raphael (source: path#chunkN).",
             "- Giovanni Bellini, Dosso Dossi, and Titian collaborated on \"The Feast of the Gods\" (Italian: \"Il festino degli dei\").\n- Titian added all the landscape to the left and centre of the painting (source: path#chunkN).\n- Completed in 1514, it was Giovanni Bellini's last major work (source: path#chunkN).\n- The painting is now in the National Gallery of Art in Washington D.C. (source: path#chunkN)."
-        ]
+        ],
+        "edc2plus_response": "The Italian artist who painted \"The School of Athens\" is Raphael."
     },
     {
         "question": "American jazz musician Art Tatum excelled on which instrument?",
@@ -487,7 +488,8 @@
             "- Art Tatum excelled on the piano, being considered one of the greatest jazz pianists of all time for his technical proficiency and creativity (source: 1).\n- Tatum's improvisations were filled with fresh and futuristic ideas, putting him ahead of his contemporaries (source: 1).\n- Tatum's style combined stride, jazz, swing, boogie-woogie, and classical elements, with innovations like the use of the pentatonic scale (source: 16).\n- Bud Powell, a prominent jazz pianist, considered Art Tatum his greatest piano influence (source: 17).\n- Composer Ray Heindorf was a close friend and admirer of Art Tatum, hosting private Tatum piano performances at his home (source: 18).",
             "- Art Tatum excelled on the piano (source: path#chunkN).",
             "- Art Tatum excelled on the piano (source: path#chunkN)."
-        ]
+        ],
+        "edc2plus_response": "Art Tatum excelled on the piano."
     },
     {
         "question": "In which present day African nation are the Amhara and Oromo peoples to be found?",
@@ -736,7 +738,8 @@
         "compressed_blocks": [
             "- The Amhara and Oromo peoples are found in Ethiopia (source: 2#chunkN).\n- The Oromo are the largest ethnic group in Ethiopia, representing 34.4% of the nation's population, while the Amhara represent 27.0% (source: 2#chunkN).\n- The Amhara are believed to have spread into the region they presently inhabit in northern Ethiopia before 500 BCE (source: 3#chunkN).\n- The Oromo people historically used their own \"Gadaa\" system of governance and had independent kingdoms in the Gibe region (source: 3#chunkN).\n- The Ethiopian slave trade benefited Muslims and increased the Islamization of the Oromo people (source: 18#chunkN).\n- Oromo leaders, such as Ras Gobana Dacche, played a significant role in the development of modern Ethiopia and the incorporation of more territories into Ethiopian borders (source: 18#chunkN).\n- Some Oromo individuals, like Iyasu V and Haile Selassie I, reached high positions in Ethiopia, with some rejecting their Oromo culture to do so (source: 19#chunkN).",
             "- The Amhara and Oromo peoples are found in present-day Ethiopia (source: 1#chunk1)"
-        ]
+        ],
+        "edc2plus_response": "The Amhara and Oromo peoples are found in present-day Ethiopia."
     },
     {
         "question": "Whom was Ronald Reagan referring to when he uttered the famous phrase \"evil empire\" in a 1983 speech?",
@@ -1053,7 +1056,8 @@
             "- Ronald Reagan referred to the Soviet Union when he uttered the famous phrase \"evil empire\" in a 1983 speech (source: 1).\n- Reagan took an aggressive stance towards the Soviet Union, calling for a rollback strategy to write the final pages of its history (source: 1).\n- The phrase \"evil empire\" angered Soviet leaders and energized conservatives in the United States and Europe (source: 1).\n- Reagan's characterization of the Soviet Union as an \"evil empire\" was defended by his conservative supporters (source: 8).\n- Reagan predicted the collapse of communism and labeled the Soviet Union as an \"evil empire\" in various speeches (source: 8, 10).\n- Reagan's description of the Soviet Union as an \"evil empire\" was part of his strategy to win the Cold War by destroying the threat of Soviet communism (source: 13).\n- Reagan's use of the phrase \"evil empire\" in his speech to the National Association of Evangelicals in 1983 drew both support and criticism (source: 12).",
             "- Ronald Reagan referred to the Soviet Union when he uttered the famous phrase \"evil empire\" in a speech to the National Association of Evangelicals on March 8, 1983 (source: 5).\n- In his 1983 speech, Reagan labeled the Soviet system as an \"Evil empire\" and a failure, stating that its demise would be a godsend for the world (source: 2).\n- Reagan also denounced the Soviet Union in ideological terms in a speech to the Parliament of the United Kingdom on June 8, 1982, stating that the forward march of freedom and democracy would leave Marxism-Leninism on the ash heap of history (source: 3).",
             "- Ronald Reagan referred to the Soviet Union as the \"evil empire\" in the 1980s (source: path#chunkN)."
-        ]
+        ],
+        "edc2plus_response": "Ronald Reagan was referring to the Soviet Union when he uttered the famous phrase \"evil empire\" in a 1983 speech to the National Association of Evangelicals. Reagan's aggressive stance towards the Soviet Union, including his use of the phrase \"evil empire,\" angered Soviet leaders and energized conservatives in the United States and Europe. Reagan's characterization of the Soviet Union as an \"evil empire\" was part of his strategy to win the Cold War by destroying the threat of Soviet communism"
     },
     {
         "question": "The pericardium is part of which organ?",
@@ -1316,7 +1320,8 @@
             "- The pericardium is part of the heart, enclosing the tube-like heart and other organs (source: path#chunk1).\n- The heart lies within a pericardium and is composed of a single auricle, a single ventricle, and a bulbous aorta (source: path#chunk2).\n- The pericardium consists of two layers with slippery serous fluid allowing them to slide freely over each other (source: path#chunk3).",
             "- The pericardium is the sac enveloping the heart (source: path#chunk1).",
             "- The pericardium is part of the heart (source: path#chunkN)"
-        ]
+        ],
+        "edc2plus_response": "The pericardium is part of the heart."
     },
     {
         "question": "The principal author of the US Constitution and writer of over 1/3 of the Federalist Papers, which US President, the 4th, was CIC during the War of 1812?",
@@ -1547,7 +1552,8 @@
             "- John Jay was the author of Federalist No. 4, discussing protection from foreign influence (source: 1#chunkN).\n- James Madison authored Federalist No. 44, addressing limitations on state power in the Constitution (source: 2#chunkN).\n- Alexander Hamilton recruited Jay and Madison to write essays defending the Constitution, with Hamilton writing the majority (source: 4#chunkN).\n- Federalist No. 39 by James Madison defines a republican form of government and urges ratification of the U.S. Constitution (source: 5#chunkN).\n- \"The Federalist Papers\" were written by Jay, Madison, and Hamilton under the pseudonym Publius to present answers for a disorderly nation (source: 6#chunkN).\n- The Federalist Papers, authored by Hamilton, Madison, and Jay, aimed to convince people to vote for ratification of the Constitution (source: 7#chunkN).\n- Alexander Hamilton justified the President's military command and pardoning power in Federalist No. 74 (source: 8#chunkN).\n- The Federalist Papers, written by Hamilton, Madison, and Jay, aimed to promote the ratification of the U.S. Constitution (source: 10#chunkN).\n- Federalist No. 73 by Alexander Hamilton discusses the support of the Executive and the veto power (source: 12#chunkN).",
             "- The principal author of the US Constitution and writer of over 1/3 of the Federalist Papers was James Madison (source: 1).\n- The 4th US President, who was Commander-in-Chief during the War of 1812, was James Madison (source: 3).\n- James Madison, along with Alexander Hamilton and John Jay, wrote 85 essays under the pseudonym \"Publius\" in support of the Constitution, known as \"The Federalist Papers\" (source: 4).\n- The Federalist Papers were published in New York and became a key tool for supporters of the Constitution during the ratifying conventions (source: 5).\n- The identity of the author of Federalist paper No. 64 was disputed, with theories suggesting John Jay's illness or delayed publication as reasons for the confusion (source: 6).",
             "- The principal author of the US Constitution and writer of over 1/3 of the Federalist Papers was Alexander Hamilton (source: path#chunkN).\n- Alexander Hamilton wrote Federalist Paper No. 16, titled \"The Same Subject Continued: The Insufficiency of the Present Confederation to Preserve the Union\" (source: path#chunkN).\n- Hamilton's Federalist Paper No. 16 was published on December 4, 1787 (source: path#chunkN).\n- The Federalist Papers were written by Alexander Hamilton, James Madison, and John Jay (source: path#chunkN).\n- The purpose of the Federalist Papers was to vindicate and recommend the new Constitution (source: path#chunkN).\n- The 4th US President during the War of 1812 was James Madison (source: path#chunkN)."
-        ]
+        ],
+        "edc2plus_response": "The 4th US President who was Commander-in-Chief during the War of 1812 was James Madison. He was also the principal author of the US Constitution and wrote over 1/3 of the Federalist Papers, along with Alexander Hamilton and John Jay, under the pseudonym \"Publius\" to support the Constitution."
     },
     {
         "question": "What is the fifth event in the heptathlon",
@@ -1780,7 +1786,8 @@
             "- The fifth event in the heptathlon is the 60m hurdles (source: 1#Day 1).\n- The men's indoor heptathlon consists of the following events: 60m, long jump, shot put, high jump, 60m hurdles, pole vault, and 1000m (source: 2#chunkN).",
             "- The fifth event in the heptathlon is the long jump (source: path#chunkN).",
             "- The fifth event in the heptathlon at the 2018 IAAF World Indoor Championships was the 60 meters.\n- Damian Warner ran the top time of 6.74 in the 60 meters, his personal best (source: 2018 IAAF World Indoor Championships – Men's heptathlon#chunk1)."
-        ]
+        ],
+        "edc2plus_response": "The fifth event in the heptathlon is the 800 meters."
     },
     {
         "question": "Where was the first competition named the FIFA Club World Cup held in 2006?",
@@ -2023,7 +2030,8 @@
         "final_answer": "The",
         "compressed_blocks": [
             "- The first competition named the FIFA Club World Cup was held in 2000 as the FIFA Club World Championship (source: 1,2).\n- It was not held between 2001 and 2004 due to various factors, including the collapse of FIFA's marketing partner International Sport and Leisure (source: 1,2).\n- The competition was relaunched in 2005 and took its current name in the season afterwards (source: 1,2).\n- The first edition of the FIFA Club World Cup in its current format was held in 2005 (source: 1,2).\n- The 2006 FIFA World Cup was held in Germany from 9 June to 9 July 2006 (source: 19).\n- The Copa Rio in 1951 presented a format resembling the first edition of the FIFA Club World Cup held in 2000 (source: 20)."
-        ]
+        ],
+        "edc2plus_response": "The first competition named the FIFA Club World Cup was held in 2000 as the FIFA Club World Championship. It was not held between 2001 and 2004, but was relaunched in 2005 with its current name. The first edition of the FIFA Club World Cup in its current format was held in 2005, not in 2006"
     },
     {
         "question": "How many scottish football league teams names end in United?",
@@ -2246,7 +2254,8 @@
             "- There are two Scottish football league teams whose names end in United: Dundee United and Ayr United (source: 1)\n- Dundee United and Ayr United are both members of the Scottish Championship (source: 1)",
             "- Manchester United (the team of the Lancashire and Yorkshire Railway depot at Newton Heath) (source: path#chunk1)\n- West Ham United (formerly Thames Ironworks) (source: path#chunk1)\n- Livingston (formerly Ferranti Thistle) (source: path#chunk1)",
             "- West Bromwich Albion, Everton, Leeds United, Arsenal, and Manchester United were in the top five of the league (source: path#chunkN).\n- Chelsea, Birmingham City, and QPR were relegated (source: path#chunkN)."
-        ]
+        ],
+        "edc2plus_response": "There are two Scottish football league teams whose names end in United: Dundee United and Ayr United."
     },
     {
         "question": "One of the Wonders of the Modern World, The Catacombs of Alexandria are in which country?",
@@ -2501,7 +2510,8 @@
             "- The Catacombs of Alexandria are located in Egypt, which was home to a diverse population including Greek, Jewish, and Egyptian people (source: path#chunk1).",
             "- The Catacombs of Alexandria are located in Egypt.\n- St. Catherine's Cathedral in Alexandria, Egypt, was built in the Neo-Baroque style from 1847 to 1856 by the Franciscan architect Serafino da Baceno (source: path#chunkN).",
             "- The Catacombs of Alexandria are located in Egypt (source: path#chunkN)."
-        ]
+        ],
+        "edc2plus_response": "The Catacombs of Alexandria are located in Egypt"
     },
     {
         "question": "What is the surname of sisters and singers Dannii and Kylie?",
@@ -2721,7 +2731,8 @@
             "- The surname of sisters and singers Dannii and Kylie is Minogue (source: 2)\n- Dannii Minogue was born between 1968 and 1971, while Kylie Minogue is the oldest sibling (source: 2)\n- Kylie Minogue made her first television singing performance in 1985 on the show \"Young Talent Time\" (source: 1)\n- Kylie Minogue was cast in the soap opera \"Neighbours\" in 1986 as Charlene Mitchell (source: 1)\n- Dannii Minogue was brought up in Surrey Hills, Melbourne and attended Camberwell Primary School and later Camberwell High School (source: 2)\n- Kylie Minogue appeared as a cameo actress in the TV series \"The Sullivans\" and \"Skyways\" in 1979 (source: 3)",
             "- The surname of sisters and singers Dannii and Kylie is Jenner (source: 1#chunkN, 2#chunkN).",
             "- The surname of sisters and singers Dannii and Kylie is Minogue (source: path#chunk1)."
-        ]
+        ],
+        "edc2plus_response": "The surname of sisters and singers Dannii and Kylie is Minogue."
     },
     {
         "question": "John and David Lloyd represented Great Britain in the early 1970s at what sport?",
@@ -2968,7 +2979,8 @@
             "- John and David Lloyd represented Great Britain in the 1980 Wightman Cup (source: 1980 Wightman Cup#chunk1)",
             "- John and David Lloyd represented Great Britain in tennis in the early 1970s (source: path#chunkN).",
             "- John and David Lloyd represented Great Britain in the team event at the British Junior Open tournament in the early 1970s (source: path#chunkN)."
-        ]
+        ],
+        "edc2plus_response": "John and David Lloyd represented Great Britain in tennis in the early 1970s."
     },
     {
         "question": "Operation Barbarossa, Hitler invades Russia.",
@@ -3185,7 +3197,8 @@
         "final_answer": "ABSTAIN",
         "compressed_blocks": [
             "- Hitler declared war against Soviet Russia as a war of extermination during a meeting on March 30, 1941 (source: 1#chunkN).\n- The Barbarossa decree, issued"
-        ]
+        ],
+        "edc2plus_response": "Hitler declared war against Soviet Russia as a war of extermination during a meeting on March 30, 1941. The Barbarossa decree was issued as part of this operation."
     },
     {
         "question": "In what Beijing square were democracy activists massacred in 1989?",
@@ -3425,7 +3438,8 @@
             "1989 Tiananmen Square protests The 1989 Tiananmen Square protests, commonly known in mainland China as the June Fourth Incident (Chinese: , \"liùsì shìjiàn\"), were student-led demonstrations in Beijing (the capital of the People's Republic of China) in 1989. More broadly, it refers to the popular national movement inspired by the Beijing protests during that period, sometimes called the '89 Democracy Movement (Chinese: , \"bājiǔ mínyùn\"). The protests were forcibly suppressed after Chinese Premier Li Peng declared martial law. In what became known in the West as the Tiananmen Square Massacre, troops with automatic rifles and tanks fired at the demonstrators",
             "- \"killed, arrested or disappeared on or following the 4 June 1989 Beijing suppression\" (source: document 1)\n- \"4 June 1989 Beijing suppression\" (source: document 1)\n- \"protests began to intensify in early May\" (source: document 2)\n- \"Martial Law was declared in urban Beijing\" (source: document 2)\n- \"halted by protesters\" (source: document 2)\n- \"humiliating withdrawal\" (source: document 2)\n- \"residents of Beijing\" (source: document 2)",
             "students, injuring scores. Later in the morning, thousands of civilians tried to re-enter the Square from the northeast on East Chang'an Avenue, which was blocked by rows of infantry. Many in the crowd were parents of the demonstrators who had been in the Square. As the crowd approached the troops, an officer sounded a warning, and the troops opened fire. The crowd scurried back down the avenue in view of journalists in the Beijing Hotel. Dozens of civilians were shot in the back as they fled. Later, the crowds surged back toward the troops, who opened fire again. The people"
-        ]
+        ],
+        "edc2plus_response": "The democracy activists were massacred in Tiananmen Square in Beijing in 1989 during the June Fourth Incident, also known as the Tiananmen Square Mass"
     },
     {
         "question": "How many edges are there on a tetrahedron?",
@@ -3645,7 +3659,8 @@
             "- The number of edges on a tetrahedron can be expressed in terms of four edges \"a\", \"b\", \"c\", \"d\" (source: 1#chunkN).\n- In an orthocentric tetrahedron, all three pairs of opposite edges are perpendicular (source: 1#chunkN).\n- The volume of a tetrahedron can be calculated using Heron's formula, where \"a,b,c\" are three edges meeting at a point, and \"x,y,z\" are the opposite edges (source: 2#chunkN).",
             "- A tetrahedron has a total of 6 edges.\n- The edges of a tetrahedron can be visualized as forming 6 circles in the plane (source: path#chunkN).",
             "- The tetrahedron has edges where \"the two adjacent edges that meet at the vertices of a tetrahedron are equal\" (source: path#chunkN).\n- The tetrahedron is a self-dual hexadecahedron and is the only one with tetrahedral symmetry (source: path#chunkN).\n- When the tetrahedron is a diminished regular dodecahedron with 4 vertices removed, the quadrilateral faces become trapezoids (source: path#chunkN).\n- The tetrahedron is a stellation of the regular icosahedron and has kite faces (source: path#chunkN)."
-        ]
+        ],
+        "edc2plus_response": "6"
     },
     {
         "question": "Who holds the record for the fastest 100m dash time ever?",
@@ -3878,7 +3893,8 @@
             "- Rachita Mistry held the 100 metres national record with a time of 11.38 seconds (source: path#chunkN).\n- Her personal best time was 11.26 seconds (source: path#chunkN).\n- The record was later broken by Merlin K. Joseph in 2013 (source: path#chunkN).",
             "- Christian Coleman holds the men's world record in the 60 metres with a time of 6.34 seconds (source: path#chunkN).",
             "- The current world record for the fastest 100m dash time ever is 9.58 seconds, set by Usain Bolt (source: 2#chunkN).\n- The Olympic record for the event is 9.63 seconds, also set by Usain Bolt in 2012 (source: 1#chunkN).\n- The fastest woman in the 100m dash at the Olympics is Florence Griffith-Joyner, with a record of 10.62 seconds in 1988 (source: 1#chunkN)."
-        ]
+        ],
+        "edc2plus_response": "Usain Bolt holds the record for the fastest 100m dash time ever with a time of 9.58 seconds, set in 2009"
     },
     {
         "question": "Which country is the world's largest producer of copper?",
@@ -4109,7 +4125,8 @@
             "- Mongolia is ranked 12th in the world for copper reserves, with the south Gobi Desert alone estimated to have 35 million tonnes of copper (source: path#chunkN).\n- The two companies that produce copper concentrate in Mongolia are Erdenet Mining Corporation, a Mongolian-Russian joint venture, and the Oyu Tolgoi mine, a joint venture between Rio Tinto Group, Turquoise Hill Resources, and the Government of Mongolia (source: path#chunkN).\n- Until 2010, copper was Mongolia's largest export (source: path#chunkN).\n- Erdenet has been in operation since 1978 as a joint project between Mongolia and Russia (source: path#chunkN).",
             "- Utah was the nation's number two producer of copper in 2006, with the Bingham Canyon Mine being one of the world's largest copper producers for over 100 years (source: path#chunkN).\n- The Bingham Canyon Mine, owned by Kennecott Utah Copper, is a large open pit in a porphyry copper deposit (source: path#chunkN).\n- The Chuquicamata copper mine in Chile also claims to be the largest copper producer (source: path#chunkN).",
             "- China is the world's leading gold-mining country, followed by Australia, Russia, the United States, Canada, and Peru (source: path#chunkN).\n- South Africa, which had dominated world gold production, declined to sixth place (source: path#chunkN).\n- Other major gold producers include Ghana, Burkina Faso, Mali, Indonesia, and Uzbekistan (source: path#chunkN)."
-        ]
+        ],
+        "edc2plus_response": "Chile is the world's largest producer of copper"
     },
     {
         "question": "Which planet has moons named after Shakespearean characters?",
@@ -4352,7 +4369,8 @@
             "- Uranus has 27 known moons, all of which are named after characters from the works of William Shakespeare and Alexander Pope (source: Moons of Uranus).\n- The moons of Uranus are divided into three groups: thirteen inner moons, five major moons, and nine irregular moons (source: Moons of Uranus).",
             "- Moons of Jupiter were initially named using Roman numerals, with the first unnamed moon being Jupiter LI (source: 1#chunkN).\n- Jupiter V, discovered in 1892, was unofficially named \"Amalthea\" by French astronomer Camille Flammarion (source: 2#chunkN).\n- French astronomer Nicolas-Claude Fabri de Peiresc suggested naming Jupiter's moons after the Medici family, but the proposal was not accepted (source: 3#chunkN).\n- Moons of Jupiter are now named after lovers and descendants of the god Jupiter, with specific naming conventions based on the moon's characteristics (source: 4#chunkN).\n- The Galilean moons of Jupiter (Io, Europa, Ganymede, and Callisto) were named by Simon Marius in 1610, but the names fell out of favor until the 20th century (source: 5#chunkN).\n- By the late 19th century, the names of Jupiter's moons had fallen out of favor, with the astronomical literature referring to them using Roman numerals or as \"Jupiter I\", \"Jupiter II\", etc. (source: 6#chunkN).",
             "- The moon Triton of Neptune was suggested in 1880 by Camille Flammarion but did not come into general use until the mid 20th-century (source: path#chunkN).\n- Nereid, the second known moon of Neptune, was named by its discoverer Gerard P. Kuiper in 1949 (source: path#chunkN)."
-        ]
+        ],
+        "edc2plus_response": "The planet Uranus has moons named after Shakespearean characters. Moons Ariel, Umbriel, Belinda, Oberon, Titania, and Miranda are all named after characters from the works of William Shakespeare."
     },
     {
         "question": "What is connected to the European mainland by a sand Isthmus called the North Front?",
@@ -4618,7 +4636,8 @@
             "- The North Cape is often mistakenly advertised as the northern extremity of Europe, but Knivskjellodden is actually further north (source: 1#chunk1).\n- Knivskjellodden, located in Nordkapp Municipality in Norway, is considered the northernmost point on the island of Magerøya in Northern Norway and sometimes the entire continent of Europe (source: 1#chunk1).\n- The nearby Kinnarodden on the Nordkinn Peninsula is the northernmost point on the mainland connected to the European mainland by a sand Isthmus called the North Front (source: 1#chunk1).\n- Knivskjellodden can only be reached on foot after a long hike from a parking area near the European route E69 highway, south of North Cape (source: 2#chunk1).",
             "- Land's End is connected to the European mainland by a sand Isthmus called the North Front (source: path#chunkN).",
             "- Cape Trafalgar is connected to the European mainland by a sand Isthmus called the North Front (source: path#chunk1)."
-        ]
+        ],
+        "edc2plus_response": "The European mainland is connected to the North Sea by a sand Isthmus called the North Front."
     },
     {
         "question": "What is the state capital of Florida?",
@@ -4851,7 +4870,8 @@
             "- The state capital of Florida is Tallahassee (source: path#chunkN).",
             "- The state capital of Florida is Tallahassee (source: path#chunkN).",
             "- The state capital of Florida is Tallahassee (source: path#chunkN)."
-        ]
+        ],
+        "edc2plus_response": "The state capital of Florida is Tallahassee."
     },
     {
         "question": "Jupiter ; Saturn and Uranus are three of the so-called ' gas giants ' in our Solar System: what is the fourth ?",
@@ -5069,7 +5089,8 @@
             "- Jupiter and Saturn are the gas giants of the Solar System, while Uranus and Neptune are classified as ice giants due to their different compositions (source: 3)\n- Uranus has the third-largest planetary radius and fourth-largest planetary mass in the Solar System, similar in composition to Neptune, but different from Jupiter and Saturn (source: 1)\n- The four giant planets have cores of rock and ice, with decreasing proportions of hydrogen and helium from Jupiter to Uranus and Neptune (source: 2)\n- Gas giants are composed mainly of hydrogen and helium, while ice giants are primarily composed of heavier elements like water, methane, and ammonia (source: 5)\n- Uranus and Neptune are now often classified as ice giants due to their compositions, distinct from the gas giants Jupiter and Saturn (source: 4)\n- Uranus and Neptune are primarily composed of elements heavier than hydrogen and helium, constituting a separate type of giant planet known as ice giants (source: 6)\n- The outer planets in the Solar System include the gas giants Jupiter and Saturn, as well as the ice giants Uranus and Neptune (source: 13)\n- Jupiter is a gas giant, along with Saturn, while Uranus and Neptune are classified as ice giants (source: 15)",
             "- Jupiter, Saturn, and Uranus are three of the so-called 'gas giants' in our Solar System (source: 1#chunkN).\n- Gas giants consist mostly of hydrogen and helium, with heavier elements making up between 3 and 13 percent of their mass (source: 2#chunkN).\n- The fourth gas giant in our Solar System is Neptune (source: N/A).",
             "- Saturn is the second-largest planet in the Solar System, after Jupiter, and is a gas giant with an average radius about nine times that of Earth (source: path#chunk1).\n- Saturn has only one-eighth the average density of Earth, but with its larger volume, it is over 95 times more massive (source: path#chunk1).\n- Saturn's interior is likely composed of a core of iron-nickel and rock, surrounded by a deep layer of metallic hydrogen (source: path#chunk1)."
-        ]
+        ],
+        "edc2plus_response": "The fourth gas giant in our Solar System is Neptune."
     },
     {
         "question": "Which is the largest of the United Arab Emirates?",
@@ -5308,7 +5329,8 @@
         "final_answer": "ABSTAIN",
         "compressed_blocks": [
             "- The largest emirate in the United Arab Emirates is Abu Dhabi, which accounts for 87% of the UAE's total area (source: 20).\n- The smallest emirate in the UAE is Ajman, encompassing only a small area (source: 20)."
-        ]
+        ],
+        "edc2plus_response": "The largest emirate in the United Arab Emirates is Abu Dhabi, which accounts for 87% of the UAE's total area."
     },
     {
         "question": "In the Harry Potter books there are 4 houses at Hogwarts School. Three of them are Gryffendor, Ravenclaw and Slytherin. Name the fourth.",
@@ -5579,7 +5601,8 @@
             "- Ilvermorny School of Witchcraft and Wizardry, founded by Isolt Sayre, has four houses: Thunderbird, Horned Serpent, Pukwudgie, and Wampus (source: path#chunkN).",
             "- In Bishop's Kalyaninagar, the four houses are Cooper (green), Freese (blue), Roberts (maroon), and Lunn (gold/yellow) (source: path#chunk1).\n- In Bishop's Undri, the four houses are Rae (red), O'Connor (green), Wintle (blue), and Young (gold/yellow) (source: path#chunk1).",
             "- The fourth house at Hogwarts School is Hufflepuff (source: path#chunkN)."
-        ]
+        ],
+        "edc2plus_response": "The fourth house at Hogwarts School is Hufflepuff."
     },
     {
         "question": "Who became Germany's first female chancellor?",
@@ -5812,7 +5835,8 @@
             "- In 1933, Joseph Goebbels justified the exclusion of women from political positions by stating \"it is necessary to leave to men that which belongs to men\" (source: path#chunkN).\n- After the election of November 1933, Germany went from having 37 female Members of Parliament out of 577 to none (source: path#chunkN).\n- Adolf Hitler becoming Chancellor marked the end of numerous women's rights in Germany (source: path#chunkN).",
             "- Helene Weber became part of the parliament council at the behest of Konrad Adenauer, who was elected the first Chancellor of the Federal Republic of Germany (source: 1#chunkN).\n- Konrad Adenauer served as the first Chancellor of the Federal Republic of Germany from 1949 to 1963 (source: 4#chunkN).\n- The current holder of the office of Chancellor of Germany is Angela Merkel, who is officially addressed as \"Frau Bundeskanzlerin\" (source: 3#chunkN).",
             "- Angela Merkel became Germany's first female chancellor in 2005 (source: path#chunkN)."
-        ]
+        ],
+        "edc2plus_response": "Angela Merkel became Germany's first female chancellor in 2005"
     },
     {
         "question": "How many ‘Triangles' are there on the logo of car manufacturer BMW?",
@@ -6037,6 +6061,7 @@
             "- The logo of car manufacturer BMW features a triangle made up of three smaller triangles and standing on its tip (source: path#chunk1).",
             "- The logo of car manufacturer BMW features four triangles. (source: path#chunkN)",
             "- The logo of car manufacturer BMW features four triangles. (source: path#chunkN)"
-        ]
+        ],
+        "edc2plus_response": "The logo of car manufacturer BMW features a total of three triangles."
     }
 ]
